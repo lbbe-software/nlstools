@@ -1,3 +1,37 @@
+#' Confidence intervals in nonlinear regression
+#' 
+#' Produces confidence intervals for the parameters in nonlinear regression
+#' model fit. The intervals can either be based large sample results or on
+#' profiling.
+#' 
+#' The profiling used is the method \code{\link[MASS]{confint.nls}.}
+#' 
+#' @param object object of class \code{\link{nls}}.
+#' @param parm a vector character strings with names of the parameter for which
+#' to calculate confidence intervals (by default all parameters).
+#' @param level the confidence level required.
+#' @param method method to be used: "asympotic" for large sample and "profile"
+#' for profiling approach.
+#' @param \dots additional argument(s) to pass on the method doing the
+#' profiling.
+#' 
+#' @importFrom stats coef qt df.residual vcov profile confint
+#' 
+#' @return A matrix with columns giving lower and upper confidence limits for
+#' each parameter.
+#' @author Christian Ritz
+#' @keywords models nonlinear
+#' @examples
+#' 
+#' 
+#' L.minor.m1 <- nls(rate ~ Vm*conc/(K+conc), data = L.minor, start = list(K=20, Vm=120))
+#' 
+#' confint2(L.minor.m1)
+#' 
+#' confint2(L.minor.m1, "K")
+#' 
+#' 
+#' @export confint2
 "confint2" <- function(object, parm, level = 0.95, method = c("asymptotic", "profile"), ...)
 {
     method <- match.arg(method)
