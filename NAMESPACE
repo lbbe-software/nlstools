@@ -1,8 +1,14 @@
 ### Imports
-import(stats)
+importFrom("stats", "coef", "confint", "df.residual", "fitted", "formula",
+  "pnorm", "ppoints", "predict", "profile", "qf", "qnorm", 
+  "qqline", "qqnorm", "qt", "quantile", "resid", "residuals",
+  "runif", "sd", "shapiro.test", "update", "vcov")
 importFrom("grDevices", "terrain.colors")
 importFrom("graphics", "abline", "boxplot", "contour", "hist", "image",
-             "layout", "lines", "par", "plot", "points", "text")
+  "layout", "lines", "par", "plot", "points", "text")
+
+
+
 ### Exports
 # functions
 export(preview, overview, plotfit)
