@@ -1,0 +1,19 @@
+Package: nlstools
+Version: 1.0-2
+Date: 2015-07-31
+Title: Tools for Nonlinear Regression Analysis
+Author: Florent Baty <florent.baty@gmail.com> and Marie-Laure
+        Delignette-Muller <marielaure.delignettemuller@vetagro-sup.fr>,
+        with contributions from Sandrine Charles, Jean-Pierre Flandrois, 
+	      and Christian Ritz 
+Maintainer: Florent Baty <florent.baty@gmail.com>
+Depends: stats
+Description: Several tools for assessing the quality of fit of a
+        gaussian nonlinear model are provided.
+License: GPL (>= 2)
+Repository: CRAN
+Packaged: 2015-07-31 08:55:13 UTC; florent
+NeedsCompilation: no
+LazyLoad: yes
+LazyData: yes
+Date/Publication: 2015-07-31 11:12:04

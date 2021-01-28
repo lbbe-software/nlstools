@@ -1,0 +1,95 @@
+=== nlstools: Tools for Nonlinear Regression Analysis ===
+
+Version 1.0-2
+=============
+
+NEW CITATION
+
+- Updated citation for the package nlstools
+
+
+Version 1.0-1
+=============
+
+NEW FEATURES
+
+- The function 'confint2' originated from the deprecated package 'nlrwr' was added
+- The new data set 'L.minor' originated from the deprecated package 'nlrwr' was added
+
+Version 1.0-0
+=============
+
+NEW FEATURES
+
+- Most nonlinear model formulas and data sets related to predictive microbiology (as well as the associated vignette) have been moved to the separate package 'nlsMicrobio'
+- The output of the function nlsJack() include the jackknife bias
+- The confidence intervals provided by the function overview were renamed "t-based confidence intervals" 
+- The function nlsBoot() generate a Bootstrap statistics including an estimate (mean of bootstrapped parameters) and a standard error (sd of the bootstrapped parameters)
+- The vignette was temporarily removed
+- The plotting function associated with the function nlsContourRSS() depicts the section of the Beale's 95% confidence region using a thicker red dotted line
+
+Version 0.0-15
+=============
+
+NEW FEATURES
+
+- A new dataset about oxygen kinetics during 6-minute walk test is provided
+
+Version 0.0-14
+=============
+
+NEW FEATURES
+
+- update of email adresses, creation of a separate folder vignettes, and diminution of the number of iterations in the example for nlsBoot and of the number of points in the confidence region  for nlsConfRegions, in order to accelerate the test of examples.
+
+
+Version 0.0-13
+=============
+
+BUG FIXES
+
+- Fixed .First.lib issue by removing unnecessary First.lib.R
+
+
+Version 0.0-12
+=============
+
+NEW FEATURES
+
+- plot.nlsContourRSS was updated with an extra argument useRaster (= TRUE by default) so that a bitmap raster is used in the image displaying the contours
+
+BUG FIXES
+
+- plotfit function was modified in order to avoid that different independent variables are used in the plot and points statement (thanks to the help of Wolfgang Kraus)
+
+
+Version 0.0-11
+=============
+
+NEW FEATURES
+
+- Update of the function 'plotfit': the default independent variable represented in the plot is the first independent variable
+
+Version 0.0-10
+=============
+
+NEW FEATURES
+
+- New models for predictive microbiology : models for simultaneous growth of two competitive bacterial flora
+
+
+Version 0.0-9
+=============
+
+NEW FEATURES
+
+- More graphical flexibilities
+
+BUG FIXES
+
+- Bootstrap confidence interval was not correctly specified
+
+Version 0.0-1
+=============
+
+- Initial release.

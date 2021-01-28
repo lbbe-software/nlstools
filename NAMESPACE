@@ -1,0 +1,97 @@
+### Imports
+import(stats)
+importFrom("grDevices", "terrain.colors")
+importFrom("graphics", "abline", "boxplot", "contour", "hist", "image",
+             "layout", "lines", "par", "plot", "points", "text")
+### Exports
+# functions
+export(preview, overview, plotfit)
+
+export(nlsBoot)
+S3method(summary, nlsBoot)
+S3method(plot, nlsBoot)
+S3method(print, nlsBoot)
+
+export(nlsConfRegions)
+S3method(plot, nlsConfRegions)
+S3method(print, nlsConfRegions)
+
+export(nlsContourRSS)
+S3method(plot, nlsContourRSS)
+S3method(print, nlsContourRSS)
+
+export(nlsJack)
+S3method(plot, nlsJack)
+S3method(print, nlsJack)
+S3method(summary, nlsJack)
+
+export(nlsResiduals)
+S3method(plot, nlsResiduals)
+S3method(print, nlsResiduals)
+export(test.nlsResiduals)
+
+# Michaelis models
+export(michaelis, compet_mich, non_compet_mich)
+
+# Defunct functions
+#export(geeraerd, geeraerd_without_Nres, geeraerd_without_Sl, mafart, albert, trilinear, bilinear_without_Nres, bilinear_without_Sl, baranyi, baranyi_without_Nmax, baranyi_without_lag, buchanan, buchanan_without_Nmax, buchanan_without_lag, gompertzm, jameson_buchanan, jameson_baranyi, jameson_without_lag, cpm_T, cpm_pH_4p, cpm_pH_3p, cpm_aw_3p, cpm_aw_2p, cpm_T_pH_aw)
+#export(competition1, competition2, growthcurve1, growthcurve2, growthcurve3, growthcurve4, ross, survivalcurve1, survivalcurve2, survivalcurve3)
+
+export(confint2)
+
+#export(confint2)
+#export(nls)
+
+#####################################
+##            Not Exported         ##
+#####################################
+
+## ******* defunct *******
+## "albert"
+## "baranyi"
+## "baranyi_without_lag"
+## "baranyi_without_Nmax"
+## "bilinear_without_Nres"
+## "bilinear_without_SI"
+## "buchanan"
+## "buchanan_without_lag"
+## "buchanan_without_Nmax"
+## "competition1"
+## "competition2"
+## "competitioncurve"
+## "competitionmodels"
+## "compet_mich"
+## "cpm_aw_2p"
+## "cpm_aw_3p"
+## "cpm_pH_3p"
+## "cpm_pH_4p"
+## "cpm_T"
+## "cpm_T_pH_aw"
+## "geeraerd"
+## "geeraerd_without_Nres"
+## "geeraerd_without_SI"
+## "gompertzm"
+## "growthcurve1"
+## "growthcurve2"
+## "growthcurve3"
+## "growthcurve4"
+## "growthmodels"
+## "jameson_baranyi"
+## "jameson_buchanan"
+## "jameson_without_lag"
+## "mafart"
+## "michaelis"
+## "michaelismodels"
+## "non_compet_mich"
+## "ross"
+## "secondary"
+## "survivalcurve1"
+## "survivalcurve2"
+## "survivalcurve3"
+## "survivalmodels"
+## "trilinear"
+## "vmkm"
+## "vmkmki"
+
+
+

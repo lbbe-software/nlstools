@@ -1,0 +1,24 @@
+citHeader("To cite nlstools in publications use:")
+
+citEntry(entry = "Article",
+  title        = "A Toolbox for Nonlinear Regression in {R}: The Package {nlstools}",
+  author       = personList(as.person("Florent Baty"),
+                   as.person("Christian Ritz"),
+                   as.person("Sandrine Charles"),
+                   as.person("Martin Brutsche"),
+                   as.person("Jean-Pierre Flandrois"),
+                   as.person("Marie-Laure Delignette-Muller")),
+  journal      = "Journal of Statistical Software",
+  year         = "2015",
+  volume       = "66",
+  number       = "5",
+  pages        = "1--21",
+  url          = "http://www.jstatsoft.org/v66/i05/",
+
+  textVersion  =
+  paste("Florent Baty, Christian Ritz, Sandrine Charles, Martin Brutsche, Jean-Pierre Flandrois, Marie-Laure Delignette-Muller (2015).",
+        "A Toolbox for Nonlinear Regression in R: The Package nlstools.",
+        "Journal of Statistical Software, 66(5), 1-21.",
+        "URL http://www.jstatsoft.org/v66/i05/.")
+)
+
