@@ -1,11 +1,12 @@
 Package: nlstools
 Version: 1.0-3
 Title: Tools for Nonlinear Regression Analysis
-Authors@R: c(person("Florent", "Baty", role = c("aut",  "cre"), email = "florent.baty@gmail.com"),
+Authors@R: c(person("Florent", "Baty", role = "aut", email = "florent.baty@gmail.com"),
              person("Marie-Laure", "Delignette-Muller", role = "aut", email = "marielaure.delignettemuller@vetagro-sup.fr"),
              person("Sandrine", "Charles", role = "ctb"),
              person("Jean-Pierre", "Flandrois", role = "ctb"),
-             person("Christian", "Ritz", role = "ctb"))
+             person("Christian", "Ritz", role = "ctb"),
+             person("Aurelie", "Siberchicot", role = c("aut", "cre"), email = "aurelie.siberchicot@univ-lyon1.fr"))
 Imports: graphics, grDevices, stats
 Description: Several tools for assessing the quality of fit of a gaussian nonlinear model are provided.
 URL: https://github.com/aursiber/nlstools
