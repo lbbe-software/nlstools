@@ -1,4 +1,8 @@
-=== nlstools: Tools for Nonlinear Regression Analysis ===
+nlstools 1.0-3
+=============
+
+* Document with roxygen2, helped by [Rd2roxygen](https://yihui.name/rd2roxygen/)
+* Moved `NEWS.md` file to track changes to the package.
 
 Version 1.0-2
 =============
