@@ -1,0 +1,45 @@
+---
+title: "extra-tools"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{extra-tools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nlstools)
+# pkgload::load_all(here::here(), export_all = FALSE)
+```
+
+## Fit a nls() model
+```{r}
+formulaExp <- as.formula(VO2 ~ (t <= 5.883) * VO2res + (t > 5.883) *
+                           (VO2res + (VO2peak - VO2res) *
+                              (1 - exp(-(t - 5.883) / mu))))
+O2K.nls1 <- nls(formulaExp, start = list(VO2res = 400, VO2peak = 1600,
+                                         mu = 1), data = O2K)
+```
+
+## Confidence interval around predictions with bootstraping
+
+```{r}
+# Confidence around estimators
+O2K.boot1 <- nlsBoot(O2K.nls1, niter = 200)
+
+# Confidence arond predictions
+# _new dataset to predict on (= original dataset)
+newdata <- head(O2K)
+# _predict
+predict(object = O2K.nls1, newdata = newdata)
+# _predict with bootstrap
+predict_boot_nls(object = O2K.nls1, newdata = newdata)
+```
+

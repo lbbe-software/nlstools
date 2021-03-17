@@ -6,7 +6,8 @@
 \alias{nlstools-package}
 \title{nlstools: Tools for Nonlinear Regression Analysis}
 \description{
-Several tools for assessing the quality of fit of a gaussian nonlinear model are provided.
+Several tools for assessing the quality of fit of a
+    gaussian nonlinear model are provided.
 }
 \seealso{
 Useful links:
