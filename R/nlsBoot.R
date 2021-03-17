@@ -1,4 +1,62 @@
-"nlsBoot"<-function(nls, niter=999){
+#' Bootstrap resampling
+#' 
+#' Bootstrap resampling
+#' 
+#' Non-parametric bootstrapping is used. Mean centered residuals are
+#' bootstrapped. By default, 999 resampled data sets are created from which
+#' parameter estimates are obtained by fitting the model on each of these data
+#' sets. Whenever the fit fails to converge, a flag reports the number of
+#' non-convergences. If the fitting procedure fails to converge in more than
+#' 50\% of the cases, the procedure is interrupted with a flag and no result is
+#' given. The function \code{summary} returns the bootstrap estimates (mean and
+#' std. dev. of the bootstrapped estimates) and the median and 95 percent
+#' confidence intervals (50, 2.5, and 97.5 percentiles of the bootstrapped
+#' estimates). The bootstrapped estimate distributions can be visualized using
+#' the function \code{plot.nlsBoot} either by plotting the bootstrapped sample
+#' for each pair of parameters or by displaying the boxplot representation of
+#' the bootstrapped sample for each parameter. Notice that \code{nlsBoot} does
+#' not currently handle transformed dependent variables specified in the left
+#' side of the \code{nls} formula.
+#' 
+#' @aliases nlsBoot plot.nlsBoot print.nlsBoot summary.nlsBoot
+#' @param nls an object of class 'nls'
+#' @param niter number of iterations
+#' @param x,object an object of class 'nlsBoot'
+#' @param type type of representation (options are "pairs" or "boxplot")
+#' @param mfr layout definition (number of rows and columns in the graphics
+#' device)
+#' @param ask if TRUE, draw plot interactively
+#' @param ...  further arguments passed to or from other methods
+#' 
+#' @importFrom stats fitted resid formula update coef quantile sd
+#' 
+#' @return \code{nlsBoot} returns a list of 4 objects: \item{ coefboot }{
+#' contains the bootstrap parameter estimates } \item{ bootCI }{ contains the
+#' bootstrap medians and the bootstrap 95\% confidence intervals } \item{
+#' estiboot }{ contains the means and std. errors of the bootstrap parameter
+#' estimates } \item{ rse }{ is the vector of bootstrap residual errors }
+#' @author Florent Baty \email{florent.baty@@gmail.com}\cr Marie-Laure
+#' Delignette-Muller \email{ml.delignette@@vetagro-sup.fr}
+#' @references Bates DM and Watts DG (1988) Nonlinear regression analysis and
+#' its applications. Wiley, Chichester, UK.\cr\cr Huet S, Bouvier A, Poursat
+#' M-A, Jolivet E (2003) Statistical tools for nonlinear regression: a
+#' practical guide with S-PLUS and R examples. Springer, Berlin, Heidelberg,
+#' New York.
+#' @keywords nonlinear
+#' @examples
+#' 
+#' formulaExp <- as.formula(VO2 ~ (t <= 5.883) * VO2res + (t > 5.883) * 
+#'                         (VO2res + (VO2peak - VO2res) * 
+#'                         (1 - exp(-(t - 5.883) / mu))))
+#' O2K.nls1 <- nls(formulaExp, start = list(VO2res = 400, VO2peak = 1600, 
+#'                 mu = 1), data = O2K)
+#' O2K.boot1 <- nlsBoot(O2K.nls1, niter = 200)
+#' plot(O2K.boot1)
+#' plot(O2K.boot1, type = "boxplot", ask = FALSE)
+#' summary(O2K.boot1)
+#'   
+#' @export nlsBoot
+nlsBoot <-function(nls, niter=999){
 
 	if (!inherits(nls, "nls"))
 		stop("Use only with 'nls' objects")
@@ -31,8 +89,10 @@
 	
 }
 
-
-"plot.nlsBoot"<-function(x, type=c("pairs","boxplot"), mfr=c(ceiling(sqrt(ncol(x$coefboot))),ceiling(sqrt(ncol(x$coefboot)))),ask=FALSE, ...){
+#' @rdname nlsBoot
+#' @importFrom graphics par layout plot boxplot
+#' @export
+plot.nlsBoot <-function(x, type=c("pairs","boxplot"), mfr=c(ceiling(sqrt(ncol(x$coefboot))),ceiling(sqrt(ncol(x$coefboot)))),ask=FALSE, ...){
 	if (!inherits(x, "nlsBoot"))
 		stop("Use only with 'nlsBoot' objects")
 	tab <- x$coefboot
@@ -60,8 +120,9 @@
 	par(def.par)
 }
 
-
-"print.nlsBoot" <- function (x, ...) {
+#' @rdname nlsBoot
+#' @export
+print.nlsBoot <- function (x, ...) {
 	if (!inherits(x, "nlsBoot"))
 		stop("Use only with 'nlsBoot' objects")
 	cat("Bootstrap resampling\n")
@@ -80,7 +141,9 @@
 	cat("\n")
 }
 
-"summary.nlsBoot" <- function (object, ...) {
+#' @rdname nlsBoot
+#' @export
+summary.nlsBoot <- function (object, ...) {
 	if (!inherits(object, "nlsBoot"))
 		stop("Use only with 'nlsBoot' objects")
 	cat("\n------\n")
