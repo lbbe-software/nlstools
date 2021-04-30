@@ -1,0 +1,334 @@
+---
+documentclass: jss
+author:
+  - name: Florent Baty
+    affiliation: Cantonal Hospital St. Gallen
+    # use this syntax to add text on several lines
+    address: |
+      | Lung Center 
+      | 9007 St. Gallen, Switzerland
+    email: \email{florent.baty@kssg.ch}
+    url:
+  - name: Christian Ritz
+    affiliation: University of Copenhagen
+    # To add another line, use \AND at the end of the previous one as above
+  - name: Sandrine Charles
+    affiliation: University of Lyon \AND 
+    # use a different affiliation in adress field (differently formated here)
+  - name: Martin Brutsche
+    affiliation: Cantonal Hospital St. Gallen 
+  - name: Jean-Pierre Flandrois
+    affiliation: University of Lyon \AND 
+  - name: Marie-Laure Delignette-Muller
+    affiliation: University of Lyon 
+title:
+  formatted: "A Toolbox for Nonlinear Regression in \\proglang{R}:  \nThe Package \\pkg{nlstools}"
+  # If you use tex in the formatted title, also supply version without
+  plain:     "A Toolbox for Nonlinear Regression in R:\\ The Package nlstools"
+  # For running headers, if needed
+  short:     "The Package \\pkg{nlstools}"
+abstract: 
+  Nonlinear regression models are applied in a broad variety of scientific fields. Various \proglang{R} functions are already dedicated to fitting such models, among which the function \code{nls()} has a prominent position. Unlike linear regression fitting of nonlinear models relies on non-trivial assumptions and therefore users are required to carefully ensure and validate the entire modelling. Parameter estimation is carried out using some variant of the least-squares criterion involving an iterative process that ideally leads to the determination of the optimal parameter estimates. Therefore, users need to have a clear understanding of the model and its parameterization in the context of the application and data considered, an \textit{a priori} idea about plausible values for parameter estimates, knowledge of model diagnostics procedures available for checking crucial assumptions, and, finally, an understanding of the limitations in the validity of the underlying hypotheses of the fitted model and its implication for the precision of parameter estimates. Current nonlinear regression modules lack dedicated diagnostic functionality. So there is a need to provide users with an extended toolbox of functions enabling a careful evaluation of nonlinear regression fits. To this end, we introduce a unified diagnostic framework with the \proglang{R} package \pkg{nlstools}. In this paper, the various features of the package are presented and exemplified using a worked example from pulmonary medicine.
+keywords:
+  # at least one keyword must be supplied
+  formatted: [Confidence regions, residuals, diagnostic tools, resampling techniques, starting values, 6-minute walk test]
+  plain:     [nonlinear regression, diagnostic tools, R]
+preamble: >
+  \usepackage{amsmath}
+output: rticles::jss_article
+bibliography: jss1248.bib
+vignette: |
+  %\VignetteIndexEntry{The package nlstools} 
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, setup, include=FALSE}
+options(prompt = 'R> ', continue = '+ ')
+```
+\newpage
+
+# Introduction
+
+  Nonlinear regression is used routinely in a wide range of biological disciplines including pharmacology, toxicology, biochemistry, ecology, microbiology and medicine \citep[e.g.,][]{Bates1988, Seber1989, Huet2003, Ritz2008}. However, statistical software programs do not always include user-friendly routines or modules for fitting nonlinear regression models; this means that researchers often choose to use inappropriate approaches such as polynomial regression or data segmentation (with arbitrary trimming of data), i.e., approaches easily carried out in any statistical software by means of linear regression. On the other hand, specialized commercial programs are available, but they are not always sufficiently flexible or intuitive \citep{Motulsky1987}.
+
+  In addition to limitations in software availability, several other difficulties arise when using nonlinear regression. Like in linear regression, nonlinear regression provides parameter estimates based on the least-squares criterion. However, unlike linear regression, no explicit mathematical solution is available and specific algorithms are needed to solve the minimization problem, involving iterative numerical approximations. Unfortunately, minimization, or optimization in general, is not always a straightforward exercise for such models due to the nonlinear relationships between parameters \citep{nashvaradhan:2011}. Consequently, obtaining useful nonlinear regression model fits may often require careful specification of model details, critical appraisal of the resulting output, and perhaps also use of summary statistics that do not rely too heavily on the model assumptions. 
+
+  Therefore nonlinear regression may appear to be more daunting than linear regression. It requires a higher degree of user interaction, both for initializing the estimation procedure and for interpreting the results. The package \pkg{nlstools} offers tools for addressing these steps when fitting nonlinear regression models using \code{nls()} (function implemented in the \proglang{R} package \pkg{stats}). \pkg{nlstools} is available on the Comprehensive \proglang{R} Archive Network at \url{http://CRAN.R-project.org/package=nlstools}. 
+
+  Specifically, there are three key issues that are often causing problems when using nonlinear regression in practice: 
+
+1. The iterative estimation procedure requires initial values of the model parameters. These so-called starting values need to be relatively close to the unknown parameter estimates in order to avoid convergence problems where the iterative procedure fails to approach the optimal parameter values. Consequently, a clear understanding of the model features and, in particular, the meaning or interpretation of its parameters would be desirable for ensuring uncomplicated model fitting. In practice researchers may find it difficult to convert such knowledge into an operational format suitable for statistical software programs. Within the statistical environment \proglang{R} \citep{R2013}, a number of extension packages provide ways to get around having to come up with starting values. The package \pkg{nls2} provides a number of ways to do grid search among candidate starting values and the resulting object may be fed directly into \code{nls()} \citep{grothendieck:2013}. Although the use of a grid search gives the user some flexibility in the definition of the starting values, a range for each model parameter still has to be provided and this may still be a challenge when balancing against the computational burden of an exhaustive search. Specifically for dose-response and growth curve modeling, the packages \pkg{drc} \citep{Ritz2005}, \pkg{drfit} \citep{Ranke2006}, and \pkg{grofit} \citep{Kahm2010} among others offer infrastructure for automatically providing data-driven, informed starting values so that the user need not think about providing suitable starting values. The idea behind such self starter routines is explained by \citet{watkinsvenables:2006}. To our knowledge this idea has not been implemented in any other statistical software. However, in many cases no self starter routines are available. This means users may often need to adopt a manual trial-and-error approach in order to ensure an optimal model fit. \pkg{nlstools} provides functionality to assist in fitting models.
+
+2. The validity of nonlinear regression model fits must be carefully evaluated by means of appropriate diagnostic and graphical tools. One of the reasons is that sometimes the algorithms used for parameter estimation return sub-optimal estimates, simply because the iterative procedure was not successful in converging to the optimal estimates (often caused by poor starting values or too complex model equations for the data at hand). However, these after-fitting validation steps, which cannot be easily automated, are often neglected because of the lack of dedicated functionality. The package \pkg{FSA} (the \emph{fishR} project: \url{http://fishr.wordpress.com/packages/}) provides some model checking functionality for specific nonlinear regression models (e.g., function \code{residPlot()}). \pkg{nlstools} provides a range of model diagnostics that will work with any \code{nls()} model fit.
+
+3. Moreover, the standard confidence intervals for model parameters in nonlinear regression models are derived assuming local linearity and normally distributed parameter estimates, e.g., \code{confint2()} \citep[p.~99]{Ritz2008}. In practice, these assumptions may not always be satisfied; this may in particular be the case for small data sets. For deriving confidence intervals, the \code{confint()} method in the package \pkg{MASS} provides likelihood profiling that does not rely on the linearization step \citep{venables&ripley:2002}. The use of non-parametric resampling techniques for assessing the uncertainty of parameter estimates will even rely less on asymptotic distributions \citep{Shao1996}. \pkg{nlstools} provides such a non-parametric alternative.
+
+In a nonlinear regression context there are several other ways to put less emphasis on the distributional assumptions. One is the use of sandwich estimators for the standard errors (in case of suspicion of misspecification of the distribution in general) \citep[pp.~83--85]{Ritz2008}. Another is to use a robust estimation procedure to avoid that singleton data points get to much influence on the model fit, e.g., using the function \code{nlrob()} in the package \pkg{robustbase} \citep{Rousseeuw2014}. There are also several ways to accommodate non-standard distributional assumptions. The packages \pkg{gnm} and \pkg{nlme} (the model fitting functions have the same names) allow flexible fitting of various extensions of the nonlinear regression model in terms of the distributions considered for the response as well as the correlation structures needed to describe dependencies between response values, respectively \citep{Turner2007, pinheirobates:2000}. However, the challenges in particular related to choosing starting values but also partly concerning model checking (points 2) and 3) above) remain. So \pkg{nlstools} offers supplementary functionality that is generally applicable for nonlinear regression analysis.
+
+Section\ \ref{sec:Methodology} briefly outlines the background for nonlinear regression. In Section\ \ref{sec:Application} we give a detailed introduction to the salient features of \pkg{nlstools} using an example from pulmonary medicine. In Section\ \ref{sec:Summary} we provide some concluding remarks.
+
+
+\section[Methodology]{Methodology and implementation}
+\label{sec:Methodology}
+
+\subsection{Nonlinear regression}
+
+  We consider standard nonlinear regression models of the following form:
+
+\begin{equation} \label{eq:nonlin}
+y = f(\theta, x) + \epsilon, \hspace{0.5cm} \epsilon \sim \mathcal{N}(0, \sigma^2)
+\end{equation}
+
+with $y$ being the response (the dependent variable), $x$ the (possibly multivariate) independent variable, which is often controlled by the experimenter, $\theta$ the vector of model parameters characterizing the relationship between $x$ and $y$ through the function $f$, and $\epsilon$ the residual error term that is assumed to be normally distributed, centered around 0 and with unknown variance ($\sigma^2$). Furthermore, we assume that the residual error terms are mutually independent as is usually assumed for standard nonlinear regression analysis 
+\citep{Bates1988}. In \proglang{R}, this nonlinear regression model may be fitted using \code{nls()} in the standard \proglang{R} installation (the package \pkg{stats}). Parameter estimation is based on an iterative procedure that involves a linearization approximation leading to a least-squares problem at each step. 
+
+Note that functions \code{gnls()} and \code{nlme()} in \pkg{nlme} allow fitting of nonlinear regression models for several curves corresponding to different covariate configurations (such as different treatments) and thus necessitating the use of correlation structures (e.g., random effects) \citep{pinheirobates:2000}. However, for building these more complex models (i.e., obtaining model fits that converge), \code{nls()} is often used initially to produce fits of individual curves, which may then subsequently be combined and supplied to enable fitting more complex nonlinear regression models (e.g., through the use of the wrapper \code{nlsList()}). 
+
+
+\subsection{About nlstools}
+
+  The package \pkg{nlstools} provides a number of tools to facilitate fitting standard nonlinear regression models (Equation\ (\ref{eq:nonlin})) and is specifically designed to work directly with \code{nls()}. The package contains functions and graphical tools that will help users to create \code{nls()} objects and carry out various diagnostic tests. More specifically, the \pkg{nlstools} toolbox will assist users in:
+  \begin{itemize}
+    \item fitting nonlinear models using function \code{nls()} by means of graphical tools;
+    \item getting a summary of parameter estimates, confidence intervals, residual standard error and sum of squares, and correlation matrix of the estimates;
+    \item visualizing the fitted curve superimposed on the observations;
+    \item checking the validity of the error model by carrying out tests and graphical checks of residuals;
+    \item inspecting the contours of the residual sum of squares (likelihood contours) to detect possible structural correlations between parameters and the presence of potential local minimum;
+    \item visualizing the projection of confidence regions and investigate the nature of correlations;
+    \item using resampling techniques in order to detect influential observations and obtain non-parametric confidence intervals of the parameter estimates.
+  \end{itemize}
+
+  We will elaborate on these features in the next section, using a concrete data example from pulmonary medicine.
+
+\section[Application]{Application in pulmonary medicine}
+\label{sec:Application}
+
+\subsection{Oxygen kinetics during 6-minute walk tests}
+
+  In order to illustrate the features of the package \pkg{nlstools}, a worked example is taken from pulmonary medicine \citep[another nonlinear regression example from pulmonary medicine can be found in][]{skjodt&ritz&vethanayagam:2008}. Exercise testing is carried out on patients with a broad range of pulmonary diseases \citep{Schalcher2003}. The clinical relevance of exercise testing is well established. For instance, the 6-minute walk test (6MWT) is performed, allowing to monitor the change in oxygen uptake over time. It is well known that exercise capacity as assessed by 6MWT correlates with impairment of daily life activities and patients prognosis in several pulmonary conditions \citep{Solway2001, Tueller2010}. Peak oxygen uptake has predictive value in patients with pulmonary hypertension and is an indicator of operability in patients with pulmonary diseases.
+  
+  Data from a typical oxygen uptake kinetics profile are shown in Figure~\ref{fig:O2}. The change of oxygen uptake (VO$_2$) during exercise testing is classically monitored in 3 distinct phases including a resting phase, the 6-minute exercise testing period, and a recovery period. VO$_2$ kinetics are classically characterized by a series of parameters including the oxygen uptake in the resting phase (VO$_2$rest), the maximum oxygen uptake during exercise (VO$_2$peak), the rate of oxygen increase between VO$_2$rest and VO$_2$peak. Subsequent parameters of clinical importance are derived from these initial parameters. Oxygen deficit (O$_2$def) is defined as the area between an instantaneous increase of oxygen to the maximum upper limit and the observed asymptotic rise of oxygen (Figure\ \ref{fig:O2}). Mean response time (MRT) is the time constant of an exponential function describing the rate of oxygen increase. It corresponds to the time needed to attain approximately 63\% of the asymptotic value VO$_2$peak \citep{Sietsema1994}, and is defined as follows: $\textrm{MRT} = O_{2}\textrm{def} / \Delta VO_2$, with $\Delta VO_2 = VO_2peak - VO_2rest$.
+  
+\begin{figure}
+\centering
+  \includegraphics[width=12cm]{figures/O2kinetics2}
+\caption{Oxygen uptake kinetics during a 6-minute walk test. This kinetics is characterized by three phases: a resting phase where oxygen is measured at a basal level prior exercise; an exercise phase where oxygen is rising asymptotically until reaching a plateau; a recovery phase where the oxygen uptake is declining towards the baseline asymptotic level.}
+\label{fig:O2}
+\end{figure}
+
+
+\subsection{Model equation}
+
+  The length of the resting phase ($\lambda$) is controlled by the experimenter and does not need to be estimated. Considering $\lambda$ constant, the following 3-parameter asymptotic regression model with a lag period (Equation\ \ref{eq:3p}) is suitable for describing the first 2 phases of the VO$_2$ kinetics:
+  
+\begin{equation}
+    VO_2(t) = \left\{
+    \begin{array}{ll}
+      \textrm{if } t \le \lambda: & VO_2rest,\\
+      \textrm{if } t > \lambda: & VO_2rest + (VO_2peak - VO_2rest) (1 - e^{-(t-\lambda) / \mu})
+    \end{array}\right.
+    \label{eq:3p}
+\end{equation}
+
+with VO$_2$rest the oxygen level during the resting phase, VO$_2$peak, the maximum oxygen uptake during exercise testing, $\mu > 0$ the rate of change characterizing the steepness of the increase as time ($t$) elapses (the larger the more steep is the curve), and $\lambda$ the duration of the resting time controlled by the experimenter. Other examples of segmented regression models are the hockey stick model and the no-effect-concentration model occasionally used in ecotoxicology \citep{piresbrancopicadomendonca:2002}. For the latter, a self-starter routine is available in package \pkg{drc} but for the former the user will need to provide starting values by himself as explained by \citet[pp.~244--248]{weisberg:2005}. For that specific purpose, the functionality provided by \pkg{nlstools} may prove particularly useful.
+
+\subsection{Model fitting in R}
+
+  As mentioned in the introduction, fitting nonlinear regression models requires the provision of starting values for model parameters. A poor choice of starting values may cause non-convergence or convergence to an unwanted local (rather than global) minimum when trying to minimize the least-squares criterion. Biologically interpretable parameter often allows the user to guess adequate starting values by assessing (often graphically) a set of plausible candidate model parameter values. For this purpose, \pkg{nlstools} provides the graphical function \code{preview()}, which can be used to assess the suitability of the chosen starting values, prior to fitting the model. This graphical approach for assessing candidate starting values is also used by \citet[pp.~23--27]{Ritz2008}, but it was not wrapped up in a single function. Below is an example of usage. First, you should specify the model equation to be used in the nonlinear regression as a formula in \proglang{R}. Use this formula as first argument of the function \code{preview()}, then supply the name of your dataset as second argument, and finally provide a list of values for the model parameters as third argument. An additional argument \code{variable} can be used to specify which independent variable is plotted against the dependent variable (column index of the original dataset; default is 1) when more than one independent variable is modeled.
+
+```{r, fig.height=5, fig.width=5, out.width='60%', fig.cap="\\label{fig:preview}Graphically assessing the starting values prior the fit of a nonlinear model."}
+
+library("nlstools")
+formulaExp <- as.formula(VO2 ~ (t <= 5.883) * VO2rest + (t > 5.883) * 
+			 (VO2rest + (VO2peak - VO2rest) * 
+			  (1 - exp(-(t - 5.883) / mu))))
+preview(formulaExp, data = O2K, 
+	start = list(VO2rest = 400, VO2peak = 1600, mu = 1))
+
+```
+
+Both the oxygen levels during the resting phase (the parameter VO$_2$rest) and the maximum oxygen level reached during the 6MWT (the parameter VO$_2$peak) can be retrieved directly in an approximate fashion from Figure\ \ref{fig:O2}, whereas $\mu$ is simply initially set to 1. Note that the length of the resting phase ($\lambda = 5.883$ min) was hardcoded into the above formula. Figure\ \ref{fig:preview} shows good agreement between the data and the theoretical model based on the provided set of starting values. Judged by the figure, the chosen starting values seem to be suitable for initializing \code{nls()}. Note that next to the plot, the residual sum of squares measuring the discrepancy between the model (based on the chosen starting values) and the observed data is provided. This value gives an idea of the magnitude of the residual sum of squares to expect from the model fit based on \code{nls()}.
+
+
+```{r}
+
+O2K.nls1 <- nls(formulaExp, start = list(VO2rest = 400, VO2peak = 1600, 
+                  mu = 1), data = O2K)
+
+```
+
+
+Once suitable starting values are obtained, the model may be fitted using \code{nls()} and then the function \code{overview()} in \pkg{nlstools} may be used for providing a single display with all relevant pieces of information about the model fit. 
+
+Specifically, \code{overview()} returns output containing:
+\begin{itemize}
+\item The parameter estimates with the corresponding estimated standard errors, $t$-test statistics (estimate/standard error) for evaluating null hypotheses that the model parameters could be equal to 0 ($H_0: \theta=0$) along with the corresponding $p-$values calculated using a $t$ distribution as reference distribution (for the present example the $t$ distribution with 33 degrees of freedom was used). The residual sum of squares $RSS_{min}=81200$ and the residual standard error ($\sqrt{RSS_{min}/33}=49.6$) are also reported, reflecting the variation within the walk test that is due to the device used. The number of steps needed for finding the parameters is also reported (numbers $>10-20$ are often indicative of poor starting values and/or too complex model equation in view of the sample size). This output is similar to the one from the \code{summary()} method available for \code{nls()} fits \citep[p.\ 12]{Ritz2008}.
+
+\item The corresponding 95\% $t$-based confidence intervals (in this case percentiles from the $t$ distribution with 33 degrees of freedom), similar to the intervals obtained using the default \code{confint2()} method in the package \pkg{nlrwr}. Accordingly reported $p$-values and confidence intervals are in agreement. We refer to \citet[pp.\ 32-33]{Huet2003} for a detailed derivation. 
+
+\item The estimated correlation matrix is reported. This piece of output allows assessment of the degree of correlation between the parameter estimates in order to detect highly correlated parameters that may indicate redundancies and perhaps point towards simplification of the model equation. In our example, the highest correlation (between $\mu$ and $VO_2peak$) is 0.76, which does not indicate any problems, but merely is a consequence of these two parameters being entangled in the same term in Equation\ \ref{eq:3p}.
+\end{itemize}
+
+\label{marker:overview}
+
+```{r}
+
+overview(O2K.nls1)
+
+```
+
+
+In order to facilitate the visualization of the model fit together with the data, \pkg{nlstools} provides the function \code{plotfit()}, which offers functionality similar to \code{abline()} with a simple linear regression model fit as argument. Thus \code{plotfit()} avoids manual definition of a grid of values for the independent variable, subsequent prediction, and use of \code{lines()}.  
+
+```{r, fig.height=5, fig.width=5, out.width='60%', fig.cap="\\label{fig:plotfit}Plot of the data (dependent vs.\ independent variable) with the fitted model superimposed."}
+
+plotfit(O2K.nls1, smooth = TRUE)
+
+```
+
+The function superimposes the fitted curve on top of the plot of the data (Figure~\ref{fig:plotfit}).
+
+
+Notice that the argument \code{smooth = TRUE} provides a smoothed representation of the fitted regression curve. This option is only available when one single (one-dimensional) independent variable is involved. For plots of a model fit involving more than one independent variable (e.g., see worked example \code{michaelis} in \pkg{nlstools}), it is necessary to specify the argument \code{variable} in the function \code{plotfit()} to indicate which variable is used for the $x$ axis. In such a case, no smoothing is possible as it would also depend on the other independent variables, i.e., \code{smooth = FALSE}. 
+
+\subsection{Assessing the goodness of fit through the residuals}
+
+  An examination of the quality of the obtained nonlinear regression model fit may be based on the residuals calculated from the fit as follows: 
+
+\[
+\hat{\epsilon} = y - f(\hat{\theta}, x)
+\]
+
+Standardized residuals are obtained by dividing the centered residuals by the residual standard error. \pkg{nlstools} provides the function \code{nlsResiduals()}, which extracts the residuals from an \code{nls} object. 
+
+The corresponding \code{plot()} method allows a convenient display of the diagnostic plots outlined by \citet[]{Ritz2008}. Specifically, \code{plot()} produces by default a four-panel display:
+
+\begin{itemize}
+
+\item Top left panel: The plot of raw residuals against fitted values is useful for assessing whether or not the chosen model equation is appropriate (the scatter is similar above and below the horizontal axis along the range of fitted values in case of an appropriate model equation).
+This plot is similar to the one obtained for linear models by using \code{plot(lmFit, which = 1)}.
+
+\item Top right panel: The plot of the standardized residuals vs.\ the fitted values is useful for evaluation if there is any indication of variance inhomogeneity, which would show up as an uneven spread across the range of the fitted values.
+
+\item Bottom left panel: The plot of each raw residual vs.\ the previous raw residual (lag one) may be useful to detect correlation along the scale of the independent variable (to be meaningful it requires the data to be order in increasing order according to the independent variable). A systematic departure away from a random scatter around the $x$ axis is indicative of correlation among the values of the dependent variable. This may often be the case if the independent variable corresponds to some kind of time scale. For more details we refer to \citet{Glasbey1979} and \citet[pp.~69--70]{Ritz2008}. 
+
+\item Bottom right panel: The normal probability plot (or QQ plot) compares the standardized residuals vs.\ the theoretical values from a standard normal distribution, both of which are expected to range from -2 and -2 for most of the values. This functionality is similar to what is available for linear models, e.g., using \code{plot(lmFit, which = 2)}.
+
+\end{itemize}
+The argument \code{which} may be used to choose which diagnostic plots should be shown (there are 6 options in total as explained in the help page). For the model fit \code{O2K.nls1} the resulting plots are shown in Figure\ \ref{fig:residuals}.
+
+```{r, fig.width=8, fig.height=8, out.width='80%', fig.cap="\\label{fig:residuals}Plot of residuals. The top left panel shows the raw residuals vs.\ the fitted values. The top right panel shows the standardized residuals (with mean $\\mu = 0$ and standard deviation $\\sigma = 1$) vs. the fitted values. The bottom left panel shows the autocorrelation plot and the bottom right panel the QQ plot of the standardized residuals."}
+
+O2K.res1 <- nlsResiduals(O2K.nls1)
+plot(O2K.res1)
+
+```
+
+Figure\ \ref{fig:residuals} shows no indication of problems with the model assumptions as the residuals seem to be approximately normally distributed (a clear alignment along the diagonal in the QQ plot) and without evidence of autocorrelation or heteroscedastic variance. 
+
+In addition to the visual assessment of the model assumptions, the normality of residuals may be evaluated using the Shapiro-Wilk test \citep[p.~69]{Ritz2008}. This test is one of the most powerful tests of normality (the function \code{shapiro.test()} is part of the package \pkg{stats} in the standard \proglang{R} installation). Similarly, the lack of autocorrelation in residuals may be assessed by means of the runs test \citep[e.g., ][]{Motulsky1987, Lopez2000,Motulsky2004}, using the function \code{runs.test()} in the package \pkg{tseries} \citep{Trapletti2013}. However, note that this is not a very strong test as it essentially only utilizes the signs of the residuals but not their actual values \citep{ritz&martinussen:2011}. We consider these tests as supplements that are occasionally useful next to the routine visual assessment of the model assumptions. Both tests are available through the function \code{test.nlsResiduals()}. 
+
+```{r}
+
+test.nlsResiduals(O2K.res1)
+
+```
+
+In our example, the null hypothesis of normal distribution could not be rejected (Shapiro-Wilk test: $p=0.12$) and there was also no indication of autocorrelation (runs test: $p=0.45$).
+
+\subsection{Confidence regions}
+
+We define the $1-\alpha$ joint confidence region for the model parameters by means of the following inequality. A given set of parameters $\theta$ is included in the confidence region if the corresponding residual sum of squares ($RSS$) is lying within the margin defined in the following Equation~\ref{eq:beale} (often referred to as Beale's criterion).
+
+\begin{equation}
+  RSS(\theta) < RSS_{min} \left[1 + \frac{p}{n-p} F_{1-\alpha}(p, n-p)\right]
+  \label{eq:beale}
+\end{equation}
+
+  with $RSS_{min}$ the minimum residual sum of squares obtained from the least-squares estimation (previously defined for the function \code{overview()}), $F_{1-\alpha}$ the appropriate quantile of the $F$-distribution with $(p, n-p)$ degrees of freedom, where $n$ is the number of observations and $p$ the number of model parameters in $f$ \citep{Beale1960, Bates1988}. Two functions are implemented in \pkg{nlstools} for visualizing the joint confidence region defined in Equation~(\ref{eq:beale}), one for showing contours and another one for showing projections. 
+
+For each pair of parameters the function \code{nlsContourRSS()} provides two-dimensional contours of the $p$-dimensional joint confidence region using a grid while keeping the remaining $p-2$ parameters fixed at their least-squares estimates. The number of contour levels is defined by the user using the argument \code{nlev}. The RSS contours can be used both to assess the structural correlation among model parameters (a graphical analog to the correlation matrix) and to detect the presence of unexpected multiple minima, which could indicate that sub-optimal parameter estimates were obtained and perhaps the model should be fitted again with different starting values.
+
+For the model fit \code{O2K.nls1}, Figure~\ref{fig:confRegions} (left panel) shows the RSS contours for the three pairs of two model parameters. The resulting two-dimensional 95\% confidence regions, which correspond to specific contours are also shown (in dotted red lines). These contours, which are expected to be close to elliptical curves as long as the error model is valid, allow an evaluation of the two-dimensional confidence regions as compared to the one-dimensional confidence intervals that are routinely used. In particular, we get an insight on the extent of overlap between one-dimensional intervals and two-dimensional regions. For instance, for the pair $\mu$ and $VO2peak$, the projections of the elliptical confidence region onto the axes result in marginal confidence intervals that are wider as compared to the standard one-dimensional confidence intervals shown in the output from \code{overview()} on page \pageref{marker:overview}. This means that standard one-dimensional confidence intervals seem to be too narrow (insufficient coverage).
+
+
+```{r, fig.show="hold", fig.width=8, fig.height=8, out.width='45%', fig.cap="\\label{fig:confRegions}The left panel displays the contours based on the residual sum of squares. The contours represented by a red dotted line correspond to the section of the Beale's 95\\% confidence region. The right panel shows the projections of the confidence region according to the Beale's criterion. The dashed red frames around the confidence regions correspond to the limits of the sampling regions.", warning=FALSE, comment=FALSE, results=FALSE}
+
+O2K.cont1 <- nlsContourRSS(O2K.nls1)
+plot(O2K.cont1, col = FALSE, nlev = 5)
+O2K.conf1 <- nlsConfRegions(O2K.nls1, exp = 2, length = 2000)
+plot(O2K.conf1, bounds = TRUE)
+
+```
+
+The function \code{nlsConfRegions()} allows users to plot another representation of the Beale's confidence region, also known as joint parameter likelihood region \citep{Bates1988}. The method consists in randomly sampling parameter values in a hypercube centered around the least-squares estimates. A set of parameters is acceptable if the resulting residual sum of squares satisfies Beale's criterion (Equation\ \ref{eq:beale}). As soon as the specified number of points to be in the confidence region is reached (argument \code{length} in \code{nlsConfRegions()}), the iterative sampling is stopped. The confidence region is then plotted by projection of the sampled points in planes defined by each pair of model parameters (Figure\ \ref{fig:confRegions}, right panel). It is often necessary to zoom in or out the sampling region in order to get a better view of the overall projected region. This is done by changing argument \code{exp} of function \code{nlsConfRegions()}. The sampling region can be visualized by setting argument \code{bound = TRUE} in the generic plotting function \code{plot.nlsConfRegions()}.
+
+It is worth noticing that the representation of the confidence region by contours does not provide exactly the same information as the representation by projections when the number of parameters is greater than two. Representations of confidence regions by contours provide smaller confidence regions than confidence regions based on projections, because the former does not incorporate the uncertainty in the $p-2$ parameter estimates left out. Therefore, representations by contours tend to slightly underestimate the size of the confidence region. 
+ 
+In our example, contours are perfectly elliptical with a global minimum at the center, which is an indication of a good nonlinear regression model fit. The narrower elliptic shape of Beale's confidence region between VO$_2$peak and $\mu$ reflects the relatively high correlation between these two parameters (correlation: 0.76).  
+
+\subsection{Resampling techniques}
+
+  Both jackknife and bootstrap procedures applied to nonlinear regression are implemented in \pkg{nlstools}. Jackknife is implemented via the function \code{nlsJack()}. By using a leave-one-out procedure, it produces jackknife parameter estimates together with confidence intervals \citep{Quenouille1956, Fox1980, Seber1989}. It can also be used to assess the influence of each observation on each parameter estimates.
+
+```{r}
+
+O2K.jack1 <- nlsJack(O2K.nls1)
+summary(O2K.jack1)
+
+```
+
+The generic function \code{summary()}, applied to an object produced by the function \code{nlsJack()}, returns the jackknife parameter estimates together with the associated bias and confidence intervals and, if applicable, a list of influential observations that are identified based on DFBETAs defined as follows:
+  
+  \begin{equation}
+  \textrm{DFBETA}(i,j) = \frac{|\hat{\theta}_j^{-i} - \hat{\theta}_j|}{se(\hat{\theta}_j)}
+  \label{eq:dfb}
+  \end{equation}
+
+  with $\hat{\theta}_j$ the estimate of the $j$\textsuperscript{th} parameter based on the original dataset, $\hat{\theta}_j^{-i}$ the estimate of the $j$\textsuperscript{th} parameter based on the dataset without the $i$\textsuperscript{th} observation, and $se(\hat{\theta}_j)$ the standard error of the $j$\textsuperscript{th} parameter estimate based on the original dataset.
+
+An observation is empirically denoted as influential for one parameter if the absolute difference between parameter estimates with and without this observation exceeds twice the standard error of the estimate divided by the square root of the number of observations \citep{Belsley1980}. Applied to our dataset, three observations appear to have a substantial influence on VO$_2$peak estimate and, similarly, three other observations are influencing $\mu$ estimate (Figure\ \ref{fig:resampling}, left panel).
+
+The function \code{nlsBoot()} uses non-parametric bootstrap of mean centered residuals to obtain a given number (argument \code{niter}) of bootstrap estimates \citep[Chapter~8]{venables&ripley:2002}. Bootstrap estimates, standard errors together with median and percentile confidence intervals (2.5\% and 97.5\% percentiles of bootstrapped estimates) \citep[pp.~225-226]{venables&ripley:2002} are displayed by the generic function \code{summary()}. The associated plotting function can be used both for a pairwise representation of the bootstrap estimates or, as shown in Figure\ \ref{fig:resampling} (right panel), for a boxplot representation of the distribution of each bootstrapped parameter. 
+
+```{r}
+
+O2K.boot1 <- nlsBoot(O2K.nls1)
+summary(O2K.boot1)
+
+```
+
+```{r, fig.show="hold", fig.width=8, fig.height=8, out.width='45%', fig.cap="\\label{fig:resampling}Resampling procedures. The left panel shows the influence of each observation on each parameter estimate according to a jackknife procedure using \\code{nlsJack()}. The right panel shows the boxplot distribution of the bootstrapped parameter estimates obtained using \\code{nlsBoot()}.", warning=FALSE, comment=FALSE, results=FALSE}
+
+plot(O2K.jack1)
+plot(O2K.boot1, type = "boxplot")
+
+```
+
+In some cases, problems of convergence may arise during the bootstrap resampling procedure, when the model cannot be fitted to the resampled data. If the fitting procedure fails less than 50\% of cases, the bootstrap statistic is provided with a warning indicating the percentage of times the procedure successfully converged; otherwise the procedure is interrupted with an error message and no result is given.
+
+The comparison of confidence intervals based on the $t$-based approximation, previously obtained using \code{overview()}, and based on resampling procedures (jackknife or bootstrap) is illustrated in Figure\ \ref{fig:comparisonCI}. In that case, it shows that bootstrap confidence intervals are comparable to the $t$-based ones, providing slightly narrower confidence intervals for all three parameters. On the other hand, jackknife confidence intervals noticeably differ from the other two intervals. This was to be expected considering that jackknife is using only limited information about the statistic and is therefore less efficient than bootstrap \citep{Efron1979}. In addition, jackknife is resampling sequentially individuals whereas bootstrap resamples residuals with replacement. Therefore, we tentatively recommend to use the bootstrap procedure for the assessment of confidence intervals of parameter estimates, whereas the jackknife procedure should be specifically used for the detection of influential observations. It is worth noting that function \code{confint()} from the default \proglang{R} package \pkg{stats} \citep{R2013} can also be used to build confidence intervals by profiling the residual sum of squares. However, this method often fails to give any result due the lack of convergence of the optimization algorithm for at least one explored value of one of the parameters. Unlike the function \code{confint()}, \code{nlsBoot()} provides confidence intervals even if the optimization algorithm fails to converge for some of the bootstrapped samples.
+
+```{r, fig.width=9, fig.height=4.5, out.width='90%', fig.cap="\\label{fig:comparisonCI}Comparison of parameter confidence intervals obtained by $t$-based and resampling (jackknife/bootstrap) methods.", warning=FALSE, comment=FALSE, results=FALSE, echo=FALSE}
+
+esti <- summary(O2K.nls1)$parameters[, "Estimate"]
+ster <- summary(O2K.nls1)$parameters[, "Std. Error"]
+t95 <- qt(0.975, df = (nrow(O2K) - 3))
+binf <- esti - t95 * ster
+bsup <- esti + t95 * ster
+par(mfrow = c(1, 3), mar = c(10,5,5,1))
+plot(1:3, c(coef(O2K.nls1)[1], O2K.jack1$estijack[1, 1], O2K.boot1$bootCI[1,1]), ylim = c(O2K.boot1$bootCI[1,2]*.96, O2K.boot1$bootCI[1,3]*1.04), xlim = c(0,4), xaxt = "n", xlab = "", ylab = expression(paste(VO[2], "rest (L)")), main = expression(paste(VO[2], "rest")), pch = 19, cex.axis = 1.5, cex.lab = 1.5, cex.main = 1.5); segments(x0 = 1:3, y0 = c(binf[1], O2K.jack1$jackCI[1,2], O2K.boot1$bootCI[1,2]), x1 = 1:3, y1 = c(bsup[1], O2K.jack1$jackCI[1,3], O2K.boot1$bootCI[1,3]), lty = 1:3); axis(1, at = 1:3, labels = c("t-based", "Jackknife", "Bootstrap"), las = 3, cex.axis = 1.6)
+plot(1:3, c(coef(O2K.nls1)[2], O2K.jack1$estijack[2, 1], O2K.boot1$bootCI[2,1]), ylim = c(O2K.boot1$bootCI[2,2]*.96, O2K.boot1$bootCI[2,3]*1.04), xlim = c(0,4), xaxt = "n", xlab = "", ylab = expression(paste(VO[2], "peak (L)")), main = expression(paste(VO[2], "peak")), pch = 19, cex.axis = 1.5, cex.lab = 1.5, cex.main = 1.5); segments(x0 = 1:3, y0 = c(binf[2], O2K.jack1$jackCI[2,2], O2K.boot1$bootCI[2,2]), x1 = 1:3, y1 = c(bsup[2], O2K.jack1$jackCI[2,3], O2K.boot1$bootCI[2,3]), lty = 1:3); axis(1, at = 1:3, labels = c("t-based", "Jackknife", "Bootstrap"), las = 3, cex.axis = 1.6)
+plot(1:3, c(coef(O2K.nls1)[3], O2K.jack1$estijack[3, 1], O2K.boot1$bootCI[3,1]), ylim = c(O2K.boot1$bootCI[3,2]*.92, O2K.boot1$bootCI[3,3]*1.06), xlim = c(0,4), xaxt = "n", xlab = "", ylab = expression(paste(mu, " (L/min)")), main = expression(paste(mu, "")), pch = 19, cex.axis = 1.5, cex.lab = 1.5, cex.main = 1.5); segments(x0 = 1:3, y0 = c(binf[3], O2K.jack1$jackCI[3,2], O2K.boot1$bootCI[3,2]), x1 = 1:3, y1 = c(bsup[3], O2K.jack1$jackCI[3,3], O2K.boot1$bootCI[3,3]), lty = 1:3); axis(1, at = 1:3, labels = c("t-based", "Jackknife", "Bootstrap"), las = 3, cex.axis = 1.6)
+
+```
+
+\section[Summary]{Concluding remarks}
+\label{sec:Summary}
+
+We have shown the usefulness of \pkg{nlstools} for the important steps in a nonlinear regression analysis. The proposed functionality is generally applicable as seen from the variety of different areas where it has already been used successfully:  biological chemistry \citep{Slupe2013}, environmental toxicology \citep{Devos2012}, forest ecology \citep{Kapeller2012, Bosela2013}, marine science \citep{Cabral2013, Villegas2013}, 
+microbiology \citep{Baty2004, Delignette2009, Ohkochi2013, Kiermeier2013, Tang2013}, limnology \citep{Volta2013}, and plant biology \citep{Matter2013}. 
+
+Further developments of \pkg{nlstools} are envisaged, including support for self-starting nonlinear regression models. It would also be useful to provide additional sensitivity procedures in order to allow users to further minimize the risk of undesirable convergence results towards local minima during the optimization procedure (e.g., an annotated and detailed report of the entire convergence process). We would also like to extend the diagnostic tools to situations where high-throughput nonlinear regression analyses are carried out, \citep[e.g.,][]{Stanzel2013}, through the implementation of some automatic diagnostic checks.
+  
