@@ -1,5 +1,13 @@
 === nlstools: Tools for Nonlinear Regression Analysis ===
 
+Version 2.0-0
+=============
+
+NEW FEATURES
+
+- Add of the JSS paper as a vignette
+- Add of the function nlsBootpredict()
+
 Version 1.0-2
 =============
 

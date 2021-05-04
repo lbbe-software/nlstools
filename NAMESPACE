@@ -17,6 +17,7 @@ export(nlsBoot)
 S3method(summary, nlsBoot)
 S3method(plot, nlsBoot)
 S3method(print, nlsBoot)
+export(nlsBootpredict)
 
 export(nlsConfRegions)
 S3method(plot, nlsConfRegions)

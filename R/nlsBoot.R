@@ -25,7 +25,8 @@
 	serr <- sum(sapply(l1, is.null))
 	if(serr > 0) warning(paste("The fit did not converge", serr, "times during bootstrapping"))
 	
-	listboot <- list(coefboot = t(tabboot), rse = rseboot, bootCI = recapboot, estiboot = estiboot)
+	listboot <- list(coefboot = t(tabboot), rse = rseboot, bootCI = recapboot, estiboot = estiboot,
+	                 nls = nls)
 	class(listboot) <- "nlsBoot"
 	return(listboot)
 	

@@ -38,11 +38,12 @@ nlsBoot (nls, niter = 999)
 }
 
 \value{ 
-    \code{nlsBoot} returns a list of 4 objects:
+    \code{nlsBoot} returns a list of 5 objects:
     \item{ coefboot }{ contains the bootstrap parameter estimates }
     \item{ bootCI }{ contains the bootstrap medians and the bootstrap 95\% confidence intervals }
     \item{ estiboot }{ contains the means and std. errors of the bootstrap parameter estimates  }
     \item{ rse }{ is the vector of bootstrap residual errors }
+    \item{ nls }{ the object of class 'nls' given in input}
 }
 
 \references{ 
