@@ -1,47 +1,32 @@
 ---
-documentclass: jss
+title: "A Toolbox for Nonlinear Regression in \\proglang{R}:  \nThe Package \\pkg{nlstools}"
 author:
-  - name: Florent Baty
-    affiliation: Cantonal Hospital St. Gallen
-    # use this syntax to add text on several lines
-    address: |
-      | Lung Center 
-      | 9007 St. Gallen, Switzerland
-    email: \email{florent.baty@kssg.ch}
-    url:
-  - name: Christian Ritz
-    affiliation: University of Copenhagen
-    # To add another line, use \AND at the end of the previous one as above
-  - name: Sandrine Charles
-    affiliation: University of Lyon \AND 
-    # use a different affiliation in adress field (differently formated here)
-  - name: Martin Brutsche
-    affiliation: Cantonal Hospital St. Gallen 
-  - name: Jean-Pierre Flandrois
-    affiliation: University of Lyon \AND 
-  - name: Marie-Laure Delignette-Muller
-    affiliation: University of Lyon 
-title:
-  formatted: "A Toolbox for Nonlinear Regression in \\proglang{R}:  \nThe Package \\pkg{nlstools}"
-  # If you use tex in the formatted title, also supply version without
-  plain:     "A Toolbox for Nonlinear Regression in R:\\ The Package nlstools"
-  # For running headers, if needed
-  short:     "The Package \\pkg{nlstools}"
+  - Florent Baty^[Cantonal Hospital St. Gallen, Lung Center, 9007 St. Gallen, Switzerland, florent.baty@kssg.ch]
+  - Christian Ritz^[University of Copenhagen]
+  - Sandrine Charles^[University of Lyon]
+  - Martin Brutsche^[Cantonal Hospital St. Gallen]
+  - Jean-Pierre Flandrois^[University of Lyon]
+  - Marie-Laure Delignette-Muller^[University of Lyon]
 abstract: 
   Nonlinear regression models are applied in a broad variety of scientific fields. Various \proglang{R} functions are already dedicated to fitting such models, among which the function \code{nls()} has a prominent position. Unlike linear regression fitting of nonlinear models relies on non-trivial assumptions and therefore users are required to carefully ensure and validate the entire modelling. Parameter estimation is carried out using some variant of the least-squares criterion involving an iterative process that ideally leads to the determination of the optimal parameter estimates. Therefore, users need to have a clear understanding of the model and its parameterization in the context of the application and data considered, an \textit{a priori} idea about plausible values for parameter estimates, knowledge of model diagnostics procedures available for checking crucial assumptions, and, finally, an understanding of the limitations in the validity of the underlying hypotheses of the fitted model and its implication for the precision of parameter estimates. Current nonlinear regression modules lack dedicated diagnostic functionality. So there is a need to provide users with an extended toolbox of functions enabling a careful evaluation of nonlinear regression fits. To this end, we introduce a unified diagnostic framework with the \proglang{R} package \pkg{nlstools}. In this paper, the various features of the package are presented and exemplified using a worked example from pulmonary medicine.
-keywords:
-  # at least one keyword must be supplied
-  formatted: [Confidence regions, residuals, diagnostic tools, resampling techniques, starting values, 6-minute walk test]
-  plain:     [nonlinear regression, diagnostic tools, R]
 preamble: >
   \usepackage{amsmath}
-output: rticles::jss_article
+output: 
+  pdf_document:
+    citation_package: natbib
+    number_sections: yes
 bibliography: jss1248.bib
 vignette: |
   %\VignetteIndexEntry{The package nlstools} 
   %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteEncoding{UTF-8}
+header-includes:
+  - \newcommand{\pkg}{\textbf} #defined in jss.cls
+  - \newcommand{\code}{\texttt} #defined in jss.cls
+  - \newcommand{\proglang}{\textsf} #defined in jss.cls
 ---
+
+*Keywords*: confidence regions, residuals, diagnostic tools, resampling techniques, starting values, 6-minute walk test, nonlinear regression, diagnostic tools, \proglang{R}
 
 ```{r, setup, include=FALSE}
 options(prompt = 'R> ', continue = '+ ')
