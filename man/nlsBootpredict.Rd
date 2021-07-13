@@ -18,7 +18,7 @@ nlsBootpredict(nlsBoot, newdata,
 \arguments{
     \item{nlsBoot}{ An object of class 'nlsBoot'. }
     \item{newdata}{ A data frame in which to look for values of independent variables 
-    for the predictions.}
+    for the predictions.If omitted, the data used for fitting are used.}
     \item{interval}{ Type of interval to compute, "confidence", or "prediction".}
 }
 
@@ -61,10 +61,9 @@ formulaExp <- as.formula(VO2 ~ (t <= 5.883) * VO2res + (t > 5.883) *
 O2K.nls1 <- nls(formulaExp, start = list(VO2res = 400, VO2peak = 1600, 
                                          mu = 1), data = O2K)
 niter <- 200
-# To reach stable confidence/prediction intervals use greater niter (> 1000)
+### To reach stable prediction intervals use far greater niter (>> 1000)
 O2K.boot1 <- nlsBoot(O2K.nls1, niter = niter)
 newdata <- data.frame(t = seq(0, 12, length.out = 50))
-predict(O2K.nls1, newdata = newdata)
 (pred.clim <- nlsBootpredict(O2K.boot1, newdata = newdata, interval = "confidence"))
 (pred.plim <- nlsBootpredict(O2K.boot1, newdata = newdata, interval = "prediction"))
 
@@ -73,6 +72,14 @@ lines(newdata$t, pred.clim[, 2], pch = 19, col = "red")
 lines(newdata$t, pred.clim[, 3], pch = 19, col = "red")
 lines(newdata$t, pred.plim[, 2], pch = 19, col = "blue")
 lines(newdata$t, pred.plim[, 3], pch = 19, col = "blue")
+
+### An example without giving newdata
+(pred.plim <- nlsBootpredict(O2K.boot1, interval = "prediction"))
+
+plotfit(O2K.nls1, smooth = FALSE, ylim = c(200, 1800))
+points(O2K$t, pred.plim[, 1], pch = 19, col = "blue")
+segments(O2K$t, pred.plim[, 2], O2K$t, pred.plim[, 3], col = "blue")
+
   }
 
 \keyword{ nonlinear }% at least one, from doc/KEYWORDS
