@@ -5,8 +5,6 @@
     stop("Use only with 'nlsBoot' objects")
   if (missing(newdata))
   {
-    #stop("You must give a value to newdata")
-    warning("in absence of newdata predictions are computed on current data\n")  
     newdata <- get(as.character(nlsBoot$nls$data))
   }
   nlsformula <- formula(nlsBoot$nls)

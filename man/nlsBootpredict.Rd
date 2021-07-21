@@ -25,7 +25,8 @@ nlsBootPredict(nlsBoot, newdata,
 \details{
     \code{nlsBootPredict} produces confidence intervals on predicted values 
 that can be obtained using \code{\link{predict.nls}} for values of the
-independent variable(s) defined in the data frame newdata. Non-parametric bootstrapping is used (results of \code{nlsBoot}). 
+independent variable(s) defined in the data frame newdata. 
+Non-parametric bootstrapping is used (results of \code{nlsBoot}). 
 For confidence intervals the bootstrap sample of predictions is simply computed
 from the bootstrap sample of estimations of the model parameters, by evaluating
 the mean value of the model on each new data. For prediction intervals, 
@@ -74,10 +75,16 @@ lines(newdata$t, pred.plim[, 2], pch = 19, col = "blue")
 lines(newdata$t, pred.plim[, 3], pch = 19, col = "blue")
 
 ### An example without giving newdata
-(pred.plim <- nlsBootPredict(O2K.boot1, interval = "prediction"))
 
-plotfit(O2K.nls1, smooth = FALSE, ylim = c(200, 1800))
-points(O2K$t, pred.plim[, 1], pch = 19, col = "blue")
+# plot of data
+plot(O2K$t, O2K$VO2)
+
+# add of predictions computed using predict.nls()
+pred <- predict(O2K.nls1)
+points(O2K$t, pred, pch = 16)
+
+# add of prediction intervals using nlsBootPredict()
+(pred.plim <- nlsBootPredict(O2K.boot1, interval = "prediction"))
 segments(O2K$t, pred.plim[, 2], O2K$t, pred.plim[, 3], col = "blue")
 
   }
