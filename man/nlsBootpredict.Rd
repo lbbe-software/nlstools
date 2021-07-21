@@ -69,10 +69,10 @@ newdata <- data.frame(t = seq(0, 12, length.out = 50))
 (pred.plim <- nlsBootPredict(O2K.boot1, newdata = newdata, interval = "prediction"))
 
 plotfit(O2K.nls1, smooth = TRUE, ylim = c(200, 1800))
-lines(newdata$t, pred.clim[, 2], pch = 19, col = "red")
-lines(newdata$t, pred.clim[, 3], pch = 19, col = "red")
-lines(newdata$t, pred.plim[, 2], pch = 19, col = "blue")
-lines(newdata$t, pred.plim[, 3], pch = 19, col = "blue")
+lines(newdata$t, pred.clim[, 2], col = "red")
+lines(newdata$t, pred.clim[, 3], col = "red")
+lines(newdata$t, pred.plim[, 2], col = "blue")
+lines(newdata$t, pred.plim[, 3], col = "blue")
 
 ### An example without giving newdata
 
