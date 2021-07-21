@@ -1,4 +1,4 @@
-"nlsBootpredict" <- function (nlsBoot, newdata, 
+"nlsBootPredict" <- function (nlsBoot, newdata, 
                               interval = c("confidence", "prediction")) 
 {
   if (!inherits(nlsBoot, "nlsBoot"))

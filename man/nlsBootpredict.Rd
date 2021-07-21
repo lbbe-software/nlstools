@@ -1,5 +1,5 @@
-\name{nlsBootpredict}
-\alias{nlsBootpredict}
+\name{nlsBootPredict}
+\alias{nlsBootPredict}
 %- Also NEED an '\alias' for EACH other topic documented here.
 
 \title{Prediction from Bootstrap resampling }
@@ -9,7 +9,7 @@ Computation of confidence intervals on predictions from Bootstrap resampling
 }
 
 \usage{
-nlsBootpredict(nlsBoot, newdata, 
+nlsBootPredict(nlsBoot, newdata, 
                 interval = c("confidence", "prediction")) 
 }
 
@@ -23,8 +23,8 @@ nlsBootpredict(nlsBoot, newdata,
 }
 
 \details{
-    \code{nlsBootpredict} produces confidence intervals on predicted values 
-that can be obtaine using \code{\link{predict.nls}} for values of the
+    \code{nlsBootPredict} produces confidence intervals on predicted values 
+that can be obtained using \code{\link{predict.nls}} for values of the
 independent variable(s) defined in the data frame newdata. Non-parametric bootstrapping is used (results of \code{nlsBoot}). 
 For confidence intervals the bootstrap sample of predictions is simply computed
 from the bootstrap sample of estimations of the model parameters, by evaluating
@@ -64,8 +64,8 @@ niter <- 200
 ### To reach stable prediction intervals use far greater niter (>> 1000)
 O2K.boot1 <- nlsBoot(O2K.nls1, niter = niter)
 newdata <- data.frame(t = seq(0, 12, length.out = 50))
-(pred.clim <- nlsBootpredict(O2K.boot1, newdata = newdata, interval = "confidence"))
-(pred.plim <- nlsBootpredict(O2K.boot1, newdata = newdata, interval = "prediction"))
+(pred.clim <- nlsBootPredict(O2K.boot1, newdata = newdata, interval = "confidence"))
+(pred.plim <- nlsBootPredict(O2K.boot1, newdata = newdata, interval = "prediction"))
 
 plotfit(O2K.nls1, smooth = TRUE, ylim = c(200, 1800))
 lines(newdata$t, pred.clim[, 2], pch = 19, col = "red")
@@ -74,7 +74,7 @@ lines(newdata$t, pred.plim[, 2], pch = 19, col = "blue")
 lines(newdata$t, pred.plim[, 3], pch = 19, col = "blue")
 
 ### An example without giving newdata
-(pred.plim <- nlsBootpredict(O2K.boot1, interval = "prediction"))
+(pred.plim <- nlsBootPredict(O2K.boot1, interval = "prediction"))
 
 plotfit(O2K.nls1, smooth = FALSE, ylim = c(200, 1800))
 points(O2K$t, pred.plim[, 1], pch = 19, col = "blue")
