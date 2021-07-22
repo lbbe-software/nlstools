@@ -14,7 +14,7 @@ citEntry(entry = "Article",
   number       = "5",
   pages        = "1--21",
   url          = "https://www.jstatsoft.org/article/view/v066i05",
-  doi          = "10.18637/jss.v066.i05"
+  doi          = "10.18637/jss.v066.i05",
   textVersion  =
   paste("Florent Baty, Christian Ritz, Sandrine Charles, Martin Brutsche, Jean-Pierre Flandrois, Marie-Laure Delignette-Muller (2015).",
         "A Toolbox for Nonlinear Regression in R: The Package nlstools.",
