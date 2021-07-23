@@ -3,34 +3,27 @@
 \alias{plot.nlsBoot}
 \alias{print.nlsBoot}
 \alias{summary.nlsBoot}
-%- Also NEED an '\alias' for EACH other topic documented here.
-
-\title{ Bootstrap resampling }
-
-\description{
-Bootstrap resampling
-}
+\title{Bootstrap resampling}
+\description{Bootstrap resampling}
 
 \usage{
-nlsBoot (nls, niter = 999)
-\method{plot}{nlsBoot} (x, type = c("pairs", "boxplot"), 
-    mfr = c(ceiling(sqrt(ncol(x$coefboot))), 
-    ceiling(sqrt(ncol(x$coefboot)))), 
-    ask = FALSE, \dots)
-\method{print}{nlsBoot} (x, \dots)
-\method{summary}{nlsBoot} (object, \dots)
+  nlsBoot (nls, niter = 999)
+  \method{plot}{nlsBoot} (x, type = c("pairs", "boxplot"), 
+      mfr = c(ceiling(sqrt(ncol(x$coefboot))), 
+      ceiling(sqrt(ncol(x$coefboot)))), 
+      ask = FALSE, \dots)
+  \method{print}{nlsBoot} (x, \dots)
+  \method{summary}{nlsBoot} (object, \dots)
 }
 
-%- maybe also 'usage' for other objects documented here.
-
 \arguments{
-    \item{nls}{ an object of class 'nls' }
-    \item{niter}{ number of iterations  }
-    \item{x, object}{ an object of class 'nlsBoot' }
-    \item{type}{ type of representation (options are "pairs" or "boxplot")}
-    \item{mfr}{ layout definition (number of rows and columns in the graphics device) }
-    \item{ask}{ if TRUE, draw plot interactively }
-    \item{...}{ further arguments passed to or from other methods }
+    \item{nls}{an object of class 'nls'}
+    \item{niter}{number of iterations}
+    \item{x, object}{an object of class 'nlsBoot'}
+    \item{type}{type of representation (options are "pairs" or "boxplot")}
+    \item{mfr}{layout definition (number of rows and columns in the graphics device)}
+    \item{ask}{if TRUE, draw plot interactively}
+    \item{...}{further arguments passed to or from other methods}
 }
 
 \details{
@@ -39,24 +32,19 @@ nlsBoot (nls, niter = 999)
 
 \value{ 
     \code{nlsBoot} returns a list of 5 objects:
-    \item{ coefboot }{ contains the bootstrap parameter estimates }
-    \item{ bootCI }{ contains the bootstrap medians and the bootstrap 95\% confidence intervals }
-    \item{ estiboot }{ contains the means and std. errors of the bootstrap parameter estimates  }
-    \item{ rse }{ is the vector of bootstrap residual errors }
-    \item{ nls }{ the object of class 'nls' given in input}
+    \item{coefboot}{contains the bootstrap parameter estimates}
+    \item{bootCI}{contains the bootstrap medians and the bootstrap 95\% confidence intervals}
+    \item{estiboot}{contains the means and std. errors of the bootstrap parameter estimates}
+    \item{rse}{is the vector of bootstrap residual errors}
+    \item{nls}{the object of class 'nls' given in input}
 }
 
 \references{ 
-Bates DM and Watts DG (1988) Nonlinear regression analysis and its applications. Wiley, Chichester, UK.\cr\cr
-Huet S, Bouvier A, Poursat M-A, Jolivet E (2003) Statistical tools for nonlinear regression: a practical guide with S-PLUS and R examples. Springer, Berlin, Heidelberg, New York.
+  Bates DM and Watts DG (1988) Nonlinear regression analysis and its applications. Wiley, Chichester, UK.\cr\cr
+  Huet S, Bouvier A, Poursat M-A, Jolivet E (2003) Statistical tools for nonlinear regression: a practical guide with S-PLUS and R examples. Springer, Berlin, Heidelberg, New York.
 }
 
-\author{ 
-Florent Baty \email{florent.baty@gmail.com}\cr
-Marie-Laure Delignette-Muller \email{ml.delignette@vetagro-sup.fr}
-}
-
-%\note{  }
+\author{Florent Baty, Marie-Laure Delignette-Muller}
 
 \examples{
 formulaExp <- as.formula(VO2 ~ (t <= 5.883) * VO2res + (t > 5.883) * 
@@ -70,4 +58,4 @@ plot(O2K.boot1, type = "boxplot", ask = FALSE)
 summary(O2K.boot1)
   }
 
-\keyword{ nonlinear }% at least one, from doc/KEYWORDS
+\keyword{nonlinear}

@@ -3,24 +3,18 @@
 \alias{michaelis}
 \alias{compet_mich}
 \alias{non_compet_mich}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Michaelis-Menten model and derived equations to model competitive and non-competitive inhibition }
-\description{
-  Formula of Michaelis-Menten model commonly used to describe enzyme kinetics, and derived formulas taking into account the 
-  effect of a competitive or a non-competitive inhibitor
-  }
-\usage{
-michaelis
-compet_mich
-non_compet_mich
+\description{Formula of Michaelis-Menten model commonly used to describe enzyme kinetics, and derived formulas taking into account the 
+effect of a competitive or a non-competitive inhibitor
 }
 
-%- maybe also 'usage' for other objects documented here.
-
-%\arguments{ }
+\usage{
+  michaelis
+  compet_mich
+  non_compet_mich
+}
 
 \details{
-
     These models describe the evolution of the reaction rate (v) as a function
     of the concentration of substrate (S) and the concentration of inhibitor (I) for \code{compet_mich} and \code{non_compet_mich}.
     
@@ -32,23 +26,15 @@ non_compet_mich
     a non-competitive inhibition : \deqn{v = \frac{S}{(S+K_m)(1+\frac{I}{Ki})} V_{max}}{v = S/( (S + Km)*(1+I/Ki) ) * Vmax} \cr\cr
 }
 
-\value{ 
-    A formula 
-}
+\value{A formula}
 
 \references{ 
-Dixon M and Webb EC (1979) \emph{Enzymes}, Academic Press, New York.
+  Dixon M and Webb EC (1979) \emph{Enzymes}, Academic Press, New York.
 }
 
-\author{ 
-Florent Baty \email{florent.baty@gmail.com}\cr
-Marie-Laure Delignette-Muller \email{ml.delignette@vetagro-sup.fr}
-}
-
-%\note{  }
+\author{Florent Baty, Marie-Laure Delignette-Muller}
 
 \examples{
-
 # Example 1
 
 data(vmkm)
@@ -74,7 +60,6 @@ res2_nc <- nlsResiduals(nls2_nc)
 plot(res2_nc, which=1)
 
 par(def.par)
+}
 
- }
-
-\keyword{ models }% at least one, from doc/KEYWORDS
+\keyword{models}

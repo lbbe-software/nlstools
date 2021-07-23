@@ -1,14 +1,8 @@
 \name{L.minor}
-
 \alias{L.minor}
-
 \docType{data}
-
 \title{Enzyme kinetics}
-
-\description{
-  Enzyme kinetics
-}
+\description{Enzyme kinetics}
 
 \usage{data(L.minor)}
 
@@ -20,15 +14,9 @@
   }
 }
 
-%\details{}
-
 \source{
   Cedergreen, N. and Madsen, T. V. (2002) Nitrogen uptake by the floating macrophyte \emph{Lemna minor},
   \emph{New Phytologist}, \bold{155}, 285--292. 
 }
-
-%\references{}
-
-%\examples{}
 
 \keyword{datasets}

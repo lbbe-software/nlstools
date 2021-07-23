@@ -1,22 +1,14 @@
 \name{nlsBootPredict}
 \alias{nlsBootPredict}
-%- Also NEED an '\alias' for EACH other topic documented here.
-
 \title{Prediction from Bootstrap resampling }
-
-\description{
-Computation of confidence intervals on predictions from Bootstrap resampling 
-}
+\description{Computation of confidence intervals on predictions from Bootstrap resampling}
 
 \usage{
-nlsBootPredict(nlsBoot, newdata, 
-                interval = c("confidence", "prediction")) 
+  nlsBootPredict(nlsBoot, newdata, interval = c("confidence", "prediction")) 
 }
 
-%- maybe also 'usage' for other objects documented here.
-
 \arguments{
-    \item{nlsBoot}{ An object of class 'nlsBoot'. }
+    \item{nlsBoot}{ An object of class 'nlsBoot'.}
     \item{newdata}{ A data frame in which to look for values of independent variables 
     for the predictions.If omitted, the data used for fitting are used.}
     \item{interval}{ Type of interval to compute, "confidence", or "prediction".}
@@ -32,7 +24,8 @@ from the bootstrap sample of estimations of the model parameters, by evaluating
 the mean value of the model on each new data. For prediction intervals, 
 to take into account the residual errors, a residual error sampled
 in the mean centered residuals is added to each mean predicted
-value. In both cases, bootstrap predictions are summarized by the median and 95 percent confidence intervals (50, 2.5, and 97.5 percentiles of the bootstrapped values).   
+value. In both cases, bootstrap predictions are summarized by the median and 95 
+percent confidence intervals (50, 2.5, and 97.5 percentiles of the bootstrapped values).   
 }
 
 \value{ 
@@ -45,23 +38,18 @@ value. In both cases, bootstrap predictions are summarized by the median and 95 
 }
 
 \references{
-Huet S, Bouvier A, Poursat M-A, Jolivet E (2003) Statistical tools for nonlinear regression: a practical guide with S-PLUS and R examples. Springer, Berlin, Heidelberg, New York.
+  Huet S, Bouvier A, Poursat M-A, Jolivet E (2003) Statistical tools for nonlinear regression: a practical guide with S-PLUS and R examples. Springer, Berlin, Heidelberg, New York.
 }
 
-\author{ 
-Florent Baty \email{florent.baty@gmail.com}\cr
-Marie-Laure Delignette-Muller \email{ml.delignette@vetagro-sup.fr}
-}
-
-%\note{  }
+\author{Florent Baty, Marie-Laure Delignette-Muller}
 
 \examples{
 formulaExp <- as.formula(VO2 ~ (t <= 5.883) * VO2res + (t > 5.883) * 
-                            (VO2res + (VO2peak - VO2res) * 
-                               (1 - exp(-(t - 5.883) / mu))))
-O2K.nls1 <- nls(formulaExp, start = list(VO2res = 400, VO2peak = 1600, 
-                                         mu = 1), data = O2K)
+                        (VO2res + (VO2peak - VO2res) * 
+                        (1 - exp(-(t - 5.883) / mu))))
+O2K.nls1 <- nls(formulaExp, start = list(VO2res = 400, VO2peak = 1600, mu = 1), data = O2K)
 niter <- 200
+
 ### To reach stable prediction intervals use far greater niter (>> 1000)
 O2K.boot1 <- nlsBoot(O2K.nls1, niter = niter)
 newdata <- data.frame(t = seq(0, 12, length.out = 50))
@@ -86,7 +74,6 @@ points(O2K$t, pred, pch = 16)
 # add of prediction intervals using nlsBootPredict()
 (pred.plim <- nlsBootPredict(O2K.boot1, interval = "prediction"))
 segments(O2K$t, pred.plim[, 2], O2K$t, pred.plim[, 3], col = "blue")
+}
 
-  }
-
-\keyword{ nonlinear }% at least one, from doc/KEYWORDS
+\keyword{nonlinear}
