@@ -1,13 +1,13 @@
 citHeader("To cite nlstools in publications use:")
 
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title        = "A Toolbox for Nonlinear Regression in {R}: The Package {nlstools}",
-  author       = personList(as.person("Florent Baty"),
-                   as.person("Christian Ritz"),
-                   as.person("Sandrine Charles"),
-                   as.person("Martin Brutsche"),
-                   as.person("Jean-Pierre Flandrois"),
-                   as.person("Marie-Laure Delignette-Muller")),
+  author       = c(person("Florent Baty"),
+                   person("Christian Ritz"),
+                   person("Sandrine Charles"),
+                   person("Martin Brutsche"),
+                   person("Jean-Pierre Flandrois"),
+                   person("Marie-Laure Delignette-Muller")),
   journal      = "Journal of Statistical Software",
   year         = "2015",
   volume       = "66",
@@ -21,3 +21,6 @@ citEntry(entry = "Article",
         "doi 10.18637/jss.v066.i05")
 )
 
+citFooter("Please cite both the package and R when using them for data analysis.",
+	  "See also", sQuote("citation()"),
+	  "for citing R.")
