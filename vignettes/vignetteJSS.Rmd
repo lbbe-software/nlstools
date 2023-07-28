@@ -124,7 +124,7 @@ with VO$_2$rest the oxygen level during the resting phase, VO$_2$peak, the maxim
 
   As mentioned in the introduction, fitting nonlinear regression models requires the provision of starting values for model parameters. A poor choice of starting values may cause non-convergence or convergence to an unwanted local (rather than global) minimum when trying to minimize the least-squares criterion. Biologically interpretable parameter often allows the user to guess adequate starting values by assessing (often graphically) a set of plausible candidate model parameter values. For this purpose, \pkg{nlstools} provides the graphical function \code{preview()}, which can be used to assess the suitability of the chosen starting values, prior to fitting the model. This graphical approach for assessing candidate starting values is also used by \citet[pp.~23--27]{Ritz2008}, but it was not wrapped up in a single function. Below is an example of usage. First, you should specify the model equation to be used in the nonlinear regression as a formula in \proglang{R}. Use this formula as first argument of the function \code{preview()}, then supply the name of your dataset as second argument, and finally provide a list of values for the model parameters as third argument. An additional argument \code{variable} can be used to specify which independent variable is plotted against the dependent variable (column index of the original dataset; default is 1) when more than one independent variable is modeled.
 
-```{r, fig.height=5, fig.width=5, out.width='60%', fig.cap="\\label{fig:preview}Graphically assessing the starting values prior the fit of a nonlinear model."}
+```{r, r1, fig.height=5, fig.width=5, out.width='60%', fig.cap="\\label{fig:preview}Graphically assessing the starting values prior the fit of a nonlinear model."}
 
 library("nlstools")
 formulaExp <- as.formula(VO2 ~ (t <= 5.883) * VO2rest + (t > 5.883) * 
@@ -138,7 +138,7 @@ preview(formulaExp, data = O2K,
 Both the oxygen levels during the resting phase (the parameter VO$_2$rest) and the maximum oxygen level reached during the 6MWT (the parameter VO$_2$peak) can be retrieved directly in an approximate fashion from Figure\ \ref{fig:O2}, whereas $\mu$ is simply initially set to 1. Note that the length of the resting phase ($\lambda = 5.883$ min) was hardcoded into the above formula. Figure\ \ref{fig:preview} shows good agreement between the data and the theoretical model based on the provided set of starting values. Judged by the figure, the chosen starting values seem to be suitable for initializing \code{nls()}. Note that next to the plot, the residual sum of squares measuring the discrepancy between the model (based on the chosen starting values) and the observed data is provided. This value gives an idea of the magnitude of the residual sum of squares to expect from the model fit based on \code{nls()}.
 
 
-```{r}
+```{r, r2}
 
 O2K.nls1 <- nls(formulaExp, start = list(VO2rest = 400, VO2peak = 1600, 
                   mu = 1), data = O2K)
@@ -159,7 +159,7 @@ Specifically, \code{overview()} returns output containing:
 
 \label{marker:overview}
 
-```{r}
+```{r, r3}
 
 overview(O2K.nls1)
 
@@ -168,7 +168,7 @@ overview(O2K.nls1)
 
 In order to facilitate the visualization of the model fit together with the data, \pkg{nlstools} provides the function \code{plotfit()}, which offers functionality similar to \code{abline()} with a simple linear regression model fit as argument. Thus \code{plotfit()} avoids manual definition of a grid of values for the independent variable, subsequent prediction, and use of \code{lines()}.  
 
-```{r, fig.height=5, fig.width=5, out.width='60%', fig.cap="\\label{fig:plotfit}Plot of the data (dependent vs.\ independent variable) with the fitted model superimposed."}
+```{r, r4, fig.height=5, fig.width=5, out.width='60%', fig.cap="\\label{fig:plotfit}Plot of the data (dependent vs.\ independent variable) with the fitted model superimposed."}
 
 plotfit(O2K.nls1, smooth = TRUE)
 
@@ -205,7 +205,7 @@ This plot is similar to the one obtained for linear models by using \code{plot(l
 \end{itemize}
 The argument \code{which} may be used to choose which diagnostic plots should be shown (there are 6 options in total as explained in the help page). For the model fit \code{O2K.nls1} the resulting plots are shown in Figure\ \ref{fig:residuals}.
 
-```{r, fig.width=8, fig.height=8, out.width='80%', fig.cap="\\label{fig:residuals}Plot of residuals. The top left panel shows the raw residuals vs.\ the fitted values. The top right panel shows the standardized residuals (with mean $\\mu = 0$ and standard deviation $\\sigma = 1$) vs. the fitted values. The bottom left panel shows the autocorrelation plot and the bottom right panel the QQ plot of the standardized residuals."}
+```{r, r5, fig.width=8, fig.height=8, out.width='80%', fig.cap="\\label{fig:residuals}Plot of residuals. The top left panel shows the raw residuals vs.\ the fitted values. The top right panel shows the standardized residuals (with mean $\\mu = 0$ and standard deviation $\\sigma = 1$) vs. the fitted values. The bottom left panel shows the autocorrelation plot and the bottom right panel the QQ plot of the standardized residuals."}
 
 O2K.res1 <- nlsResiduals(O2K.nls1)
 plot(O2K.res1)
@@ -216,7 +216,7 @@ Figure\ \ref{fig:residuals} shows no indication of problems with the model assum
 
 In addition to the visual assessment of the model assumptions, the normality of residuals may be evaluated using the Shapiro-Wilk test \citep[p.~69]{Ritz2008}. This test is one of the most powerful tests of normality (the function \code{shapiro.test()} is part of the package \pkg{stats} in the standard \proglang{R} installation). Similarly, the lack of autocorrelation in residuals may be assessed by means of the runs test \citep[e.g., ][]{Motulsky1987, Lopez2000,Motulsky2004}, using the function \code{runs.test()} in the package \pkg{tseries} \citep{Trapletti2013}. However, note that this is not a very strong test as it essentially only utilizes the signs of the residuals but not their actual values \citep{ritzmartinussen2011}. We consider these tests as supplements that are occasionally useful next to the routine visual assessment of the model assumptions. Both tests are available through the function \code{test.nlsResiduals()}. 
 
-```{r}
+```{r, r6}
 
 test.nlsResiduals(O2K.res1)
 
@@ -240,7 +240,7 @@ For each pair of parameters the function \code{nlsContourRSS()} provides two-dim
 For the model fit \code{O2K.nls1}, Figure&nbsp;\ref{fig:confRegions} (left panel) shows the RSS contours for the three pairs of two model parameters. The resulting two-dimensional 95\% confidence regions, which correspond to specific contours are also shown (in dotted red lines). These contours, which are expected to be close to elliptical curves as long as the error model is valid, allow an evaluation of the two-dimensional confidence regions as compared to the one-dimensional confidence intervals that are routinely used. In particular, we get an insight on the extent of overlap between one-dimensional intervals and two-dimensional regions. For instance, for the pair $\mu$ and $VO2peak$, the projections of the elliptical confidence region onto the axes result in marginal confidence intervals that are wider as compared to the standard one-dimensional confidence intervals shown in the output from \code{overview()} on page \pageref{marker:overview}. This means that standard one-dimensional confidence intervals seem to be too narrow (insufficient coverage).
 
 
-```{r, fig.show="hold", fig.width=8, fig.height=8, out.width='45%', fig.cap="\\label{fig:confRegions}The left panel displays the contours based on the residual sum of squares. The contours represented by a red dotted line correspond to the section of the Beale's 95\\% confidence region. The right panel shows the projections of the confidence region according to the Beale's criterion. The dashed red frames around the confidence regions correspond to the limits of the sampling regions.", warning=FALSE, comment=FALSE, results=FALSE}
+```{r, r7, fig.show="hold", fig.width=8, fig.height=8, out.width='45%', fig.cap="\\label{fig:confRegions}The left panel displays the contours based on the residual sum of squares. The contours represented by a red dotted line correspond to the section of the Beale's 95\\% confidence region. The right panel shows the projections of the confidence region according to the Beale's criterion. The dashed red frames around the confidence regions correspond to the limits of the sampling regions.", warning=FALSE, comment=FALSE, results=FALSE}
 
 O2K.cont1 <- nlsContourRSS(O2K.nls1)
 plot(O2K.cont1, col = FALSE, nlev = 5)
@@ -263,7 +263,7 @@ in order to include the new function nlsBootPredict().*
 
   Both jackknife and bootstrap procedures applied to nonlinear regression are implemented in \pkg{nlstools}. Jackknife is implemented via the function \code{nlsJack()}. By using a leave-one-out procedure, it produces jackknife parameter estimates together with confidence intervals \citep{Quenouille1956, Fox1980, Seber1989}. It can also be used to assess the influence of each observation on each parameter estimates.
 
-```{r}
+```{r, r8}
 
 O2K.jack1 <- nlsJack(O2K.nls1)
 summary(O2K.jack1)
@@ -283,14 +283,14 @@ An observation is empirically denoted as influential for one parameter if the ab
 
 The function \code{nlsBoot()} uses non-parametric bootstrap of mean centered residuals to obtain a given number (argument \code{niter}) of bootstrap estimates \citep[Chapter 8]{venablesripley2002}. Bootstrap estimates, standard errors together with median and percentile confidence intervals (2.5\% and 97.5\% percentiles of bootstrapped estimates) \citep[pp. 225-226]{venablesripley2002} are displayed by the generic function \code{summary()}. The associated plotting function can be used both for a pairwise representation of the bootstrap estimates or, as shown in Figure\ \ref{fig:resampling} (right panel), for a boxplot representation of the distribution of each bootstrapped parameter. 
 
-```{r}
+```{r, r9}
 
 O2K.boot1 <- nlsBoot(O2K.nls1)
 summary(O2K.boot1)
 
 ```
 
-```{r, fig.show="hold", fig.width=8, fig.height=8, out.width='45%', fig.cap="\\label{fig:resampling}Resampling procedures. The left panel shows the influence of each observation on each parameter estimate according to a jackknife procedure using \\code{nlsJack()}. The right panel shows the boxplot distribution of the bootstrapped parameter estimates obtained using \\code{nlsBoot()}.", warning=FALSE, comment=FALSE, results=FALSE}
+```{r, r10, fig.show="hold", fig.width=8, fig.height=8, out.width='45%', fig.cap="\\label{fig:resampling}Resampling procedures. The left panel shows the influence of each observation on each parameter estimate according to a jackknife procedure using \\code{nlsJack()}. The right panel shows the boxplot distribution of the bootstrapped parameter estimates obtained using \\code{nlsBoot()}.", warning=FALSE, comment=FALSE, results=FALSE}
 
 plot(O2K.jack1)
 plot(O2K.boot1, type = "boxplot")
@@ -301,7 +301,7 @@ In some cases, problems of convergence may arise during the bootstrap resampling
 
 The comparison of confidence intervals based on the $t$-based approximation, previously obtained using \code{overview()}, and based on resampling procedures (jackknife or bootstrap) is illustrated in Figure\ \ref{fig:comparisonCI}. In that case, it shows that bootstrap confidence intervals are comparable to the $t$-based ones, providing slightly narrower confidence intervals for all three parameters. On the other hand, jackknife confidence intervals noticeably differ from the other two intervals. This was to be expected considering that jackknife is using only limited information about the statistic and is therefore less efficient than bootstrap \citep{Efron1979}. In addition, jackknife is resampling sequentially individuals whereas bootstrap resamples residuals with replacement. Therefore, we tentatively recommend to use the bootstrap procedure for the assessment of confidence intervals of parameter estimates, whereas the jackknife procedure should be specifically used for the detection of influential observations. It is worth noting that function \code{confint()} from the default \proglang{R} package \pkg{stats} \citep{R2013} can also be used to build confidence intervals by profiling the residual sum of squares. However, this method often fails to give any result due the lack of convergence of the optimization algorithm for at least one explored value of one of the parameters. Unlike the function \code{confint()}, \code{nlsBoot()} provides confidence intervals even if the optimization algorithm fails to converge for some of the bootstrapped samples.
 
-```{r, fig.width=9, fig.height=4.5, out.width='90%', fig.cap="\\label{fig:comparisonCI}Comparison of parameter confidence intervals obtained by $t$-based and resampling (jackknife/bootstrap) methods.", warning=FALSE, comment=FALSE, results=FALSE, echo=FALSE}
+```{r, r11, fig.width=9, fig.height=4.5, out.width='90%', fig.cap="\\label{fig:comparisonCI}Comparison of parameter confidence intervals obtained by $t$-based and resampling (jackknife/bootstrap) methods.", warning=FALSE, comment=FALSE, results=FALSE, echo=FALSE}
 
 esti <- summary(O2K.nls1)$parameters[, "Estimate"]
 ster <- summary(O2K.nls1)$parameters[, "Std. Error"]
@@ -322,7 +322,7 @@ A great number of bootstrap iterations (greater than the default value) should
 generally be used for the computation of prediction intervals.
 
 
-```{r, fig.show="hold", fig.width=5, fig.height=5, out.width='60%', fig.cap="\\label{fig:predCI}Plot of the data with the model superimposed and 95 percent bootstrap conifdence intervals represented as a confidence band", warning=FALSE, comment=FALSE, results=FALSE}
+```{r, r12, fig.show="hold", fig.width=5, fig.height=5, out.width='60%', fig.cap="\\label{fig:predCI}Plot of the data with the model superimposed and 95 percent bootstrap conifdence intervals represented as a confidence band", warning=FALSE, comment=FALSE, results=FALSE}
 
 newdata <- data.frame(t = seq(0, 12, length.out = 50))
 pred.clim <- nlsBootPredict(O2K.boot1, newdata = newdata, interval = "confidence")
