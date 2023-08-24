@@ -9,10 +9,14 @@
 	np <- length(coef(nls))
 	
 	l1 <- lapply(1:nl, function(z){
-		nls2 <- update(nls, data=data[-z,], start=as.list(coef(nls)));
-		return(list(coef=coef(nls2), sigma=summary(nls2)$sigma, rss=sum(residuals(nls2)^2), dfb=abs(coef(nls2)-coef(nls))/(summary(nls)$parameters[,2])))
+	    if(!is.null(weights(nls))) {
+	        nls2 <- update(nls, data=data[-z,], weights= weights(nls)[-z], start=as.list(coef(nls)))
+	    } else {
+	        nls2 <- update(nls, data=data[-z,], start=as.list(coef(nls)))
+	    }
+	    return(list(coef=coef(nls2), sigma=summary(nls2)$sigma, rss=sum(residuals(nls2)^2), dfb=abs(coef(nls2)-coef(nls))/(summary(nls)$parameters[,2])))
 	})
-
+	
 	tabjack <- t(sapply(l1, function(z) z$coef))
 	rsejack <- sapply(l1, function(z) z$sigma)
 	rssjack <- sapply(l1, function(z) z$rss)

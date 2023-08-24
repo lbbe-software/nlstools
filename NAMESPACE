@@ -2,7 +2,7 @@
 importFrom("stats", "coef", "confint", "df.residual", "fitted", "formula",
   "pnorm", "ppoints", "predict", "profile", "qf", "qnorm", 
   "qqline", "qqnorm", "qt", "quantile", "resid", "residuals",
-  "runif", "sd", "shapiro.test", "update", "vcov")
+  "runif", "sd", "shapiro.test", "update", "vcov", "weights")
 importFrom("grDevices", "terrain.colors")
 importFrom("graphics", "abline", "boxplot", "contour", "hist", "image",
   "layout", "lines", "par", "plot", "points", "text")
