@@ -10,8 +10,8 @@ Authors@R: c(person("Florent", "Baty", role = "aut", email = "florent.baty@gmail
 Imports: graphics, grDevices, stats
 Suggests: knitr, rmarkdown, rticles
 Description: Several tools for assessing the quality of fit of a gaussian nonlinear model are provided.
-URL: https://github.com/aursiber/nlstools
-BugReports: https://github.com/aursiber/nlstools/issues
+URL: https://github.com/lbbe-software/nlstools
+BugReports: https://github.com/lbbe-software/nlstools/issues
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
