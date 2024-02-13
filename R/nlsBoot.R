@@ -4,15 +4,17 @@
 		stop("Use only with 'nls' objects")
 
 	data2 <- eval(nls$data, sys.frame(0))
+    start0 <- eval(nls$call$start, sys.frame(0))
+    start1 <- relist(coef(nls), skeleton=start0)
 	fitted1 <- fitted(nls)
 	resid1 <- resid(nls)
 	var1 <- all.vars(formula(nls)[[2]])
 	
 	l1 <- lapply(1:niter, function(i){
-		data2[,var1] <- fitted1 + sample(scale(resid1, scale=FALSE), replace=TRUE);
-		nls2 <- try(update(nls, start=as.list(coef(nls)), data=data2), silent=TRUE);
+		data2[,var1] <- fitted1 + sample(scale(resid1, scale = FALSE), replace = TRUE);
+		nls2 <- try(update(nls, start = start1, data = data2), silent = TRUE);
 		if(inherits(nls2, "nls"))
-			return(list(coef=coef(nls2), rse=summary(nls2)$sigma))
+			return(list(coef = coef(nls2), rse = summary(nls2)$sigma))
 		})
 
 	if(sum(sapply(l1, is.null)) > niter/2) stop(paste("Procedure aborted: the fit only converged in", round(sum(sapply(l1, is.null))/niter), "% during bootstrapping"))

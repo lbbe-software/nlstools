@@ -4,15 +4,16 @@
 
 	c1 <- nls$call
 	data <- eval(c1$data, sys.frame(0))
-	c1$start <- as.list(coef(nls))
+	start0 <- eval(c1$start, sys.frame(0))
+    start1 <- relist(coef(nls), skeleton=start0)
 	nl <- nrow(data)
 	np <- length(coef(nls))
 	
 	l1 <- lapply(1:nl, function(z){
 	    if(!is.null(weights(nls))) {
-	        nls2 <- update(nls, data=data[-z,], weights= weights(nls)[-z], start=as.list(coef(nls)))
+	        nls2 <- update(nls, data = data[-z,], weights = weights(nls)[-z], start = start1)
 	    } else {
-	        nls2 <- update(nls, data=data[-z,], start=as.list(coef(nls)))
+	        nls2 <- update(nls, data = data[-z,], start = start1)
 	    }
 	    return(list(coef=coef(nls2), sigma=summary(nls2)$sigma, rss=sum(residuals(nls2)^2), dfb=abs(coef(nls2)-coef(nls))/(summary(nls)$parameters[,2])))
 	})
