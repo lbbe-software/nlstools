@@ -6,7 +6,7 @@ importFrom("stats", "coef", "confint", "df.residual", "fitted", "formula",
 importFrom("grDevices", "terrain.colors")
 importFrom("graphics", "abline", "boxplot", "contour", "hist", "image",
   "layout", "lines", "par", "plot", "points", "text")
-
+importFrom("utils", "relist")
 
 
 ### Exports
