@@ -1,4 +1,4 @@
-[![CRAN_Release_Badge](http://www.r-pkg.org/badges/version-ago/nlstools)](https://cran.r-project.org/package=nlstools)
+[![CRAN_Release_Badge](https://www.r-pkg.org/badges/version-ago/nlstools)](https://cran.r-project.org/package=nlstools)
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/nlstools)](https://cran.r-project.org/package=nlstools)
 [![R-CMD-check](https://github.com/lbbe-software/nlstools/workflows/R-CMD-check/badge.svg)](https://github.com/lbbe-software/nlstools/actions)
 
