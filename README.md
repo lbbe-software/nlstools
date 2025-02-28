@@ -1,6 +1,7 @@
 [![CRAN_Release_Badge](https://www.r-pkg.org/badges/version-ago/nlstools)](https://cran.r-project.org/package=nlstools)
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/nlstools)](https://cran.r-project.org/package=nlstools)
 [![R-CMD-check](https://github.com/lbbe-software/nlstools/workflows/R-CMD-check/badge.svg)](https://github.com/lbbe-software/nlstools/actions)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 ---------------------------
 
