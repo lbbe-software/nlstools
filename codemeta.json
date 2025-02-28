@@ -1,0 +1,180 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "identifier": "nlstools",
+  "description": "Several tools for assessing the quality of fit of a gaussian nonlinear model are provided.",
+  "name": "nlstools: Tools for Nonlinear Regression Analysis",
+  "codeRepository": "https://github.com/lbbe-software/nlstools",
+  "issueTracker": "https://github.com/lbbe-software/nlstools/issues",
+  "license": "https://spdx.org/licenses/GPL-3.0",
+  "version": "2.1.0",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "R",
+    "url": "https://r-project.org"
+  },
+  "runtimePlatform": "R version 4.4.2 (2024-10-31)",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  },
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Florent",
+      "familyName": "Baty",
+      "email": "florent.baty@gmail.com"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Marie-Laure",
+      "familyName": "Delignette-Muller",
+      "email": "marielaure.delignettemuller@vetagro-sup.fr"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Aurelie",
+      "familyName": "Siberchicot",
+      "email": "aurelie.siberchicot@univ-lyon1.fr"
+    }
+  ],
+  "contributor": [
+    {
+      "@type": "Person",
+      "givenName": "Sandrine",
+      "familyName": "Charles"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Jean-Pierre",
+      "familyName": "Flandrois"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Christian",
+      "familyName": "Ritz"
+    }
+  ],
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": "Aurelie",
+      "familyName": "Siberchicot",
+      "email": "aurelie.siberchicot@univ-lyon1.fr"
+    }
+  ],
+  "softwareSuggestions": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "knitr",
+      "name": "knitr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=knitr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "rmarkdown",
+      "name": "rmarkdown",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rmarkdown"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "rticles",
+      "name": "rticles",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rticles"
+    }
+  ],
+  "softwareRequirements": {
+    "1": {
+      "@type": "SoftwareApplication",
+      "identifier": "graphics",
+      "name": "graphics"
+    },
+    "2": {
+      "@type": "SoftwareApplication",
+      "identifier": "grDevices",
+      "name": "grDevices"
+    },
+    "3": {
+      "@type": "SoftwareApplication",
+      "identifier": "stats",
+      "name": "stats"
+    },
+    "4": {
+      "@type": "SoftwareApplication",
+      "identifier": "utils",
+      "name": "utils"
+    },
+    "SystemRequirements": null
+  },
+  "fileSize": "863.357KB",
+  "citation": [
+    {
+      "@type": "ScholarlyArticle",
+      "datePublished": "2015",
+      "author": [
+        {
+          "@type": "Organization",
+          "name": "Florent Baty"
+        },
+        {
+          "@type": "Organization",
+          "name": "Christian Ritz"
+        },
+        {
+          "@type": "Organization",
+          "name": "Sandrine Charles"
+        },
+        {
+          "@type": "Organization",
+          "name": "Martin Brutsche"
+        },
+        {
+          "@type": "Organization",
+          "name": "Jean-Pierre Flandrois"
+        },
+        {
+          "@type": "Organization",
+          "name": "Marie-Laure Delignette-Muller"
+        }
+      ],
+      "name": "A Toolbox for Nonlinear Regression in {R}: The Package {nlstools}",
+      "identifier": "10.18637/jss.v066.i05",
+      "pagination": "1--21",
+      "@id": "https://doi.org/10.18637/jss.v066.i05",
+      "sameAs": "https://doi.org/10.18637/jss.v066.i05",
+      "isPartOf": {
+        "@type": "PublicationIssue",
+        "issueNumber": "5",
+        "datePublished": "2015",
+        "isPartOf": {
+          "@type": ["PublicationVolume", "Periodical"],
+          "volumeNumber": "66",
+          "name": "Journal of Statistical Software"
+        }
+      }
+    }
+  ],
+  "readme": "https://github.com/lbbe-software/nlstools/blob/main/README.md",
+  "contIntegration": "https://github.com/lbbe-software/nlstools/actions",
+  "relatedLink": "https://CRAN.R-project.org/package=nlstools"
+}
