@@ -2,6 +2,7 @@
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/nlstools)](https://cran.r-project.org/package=nlstools)
 [![R-CMD-check](https://github.com/lbbe-software/nlstools/workflows/R-CMD-check/badge.svg)](https://github.com/lbbe-software/nlstools/actions)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/lbbe-software/nlstools/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/lbbe-software/nlstools)
 
 ---------------------------
 
